@@ -2,8 +2,9 @@
 Made as the Final Requirement for Discrete Mathematics.
 
 File Directory Guide
-| model      | Contains classes representing your data and objects.     |
+| Folder     | Details                                                  |
 |------------|----------------------------------------------------------|
+| model      | Contains classes representing your data and objects.     |
 | view       | Contains the GUI, forms, tables, buttons, and screens.   |
 | controller | Handles user actions and connects the View to the Model. |
 | database   | Handles database connections and initialization.         |
