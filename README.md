@@ -12,7 +12,7 @@ File Directory Guide
 
 Project Members:
 - Antalan, Gabriel
-- Balgomia, Austin Leiro
+- [Balgomia, Austin Leiro](https://github.com/Ausiro)
 - Estaño, Raven Seth
 - Nepomuceno, Stephen Chase
 - Rocolcol, Glycel
