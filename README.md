@@ -1,4 +1,4 @@
-# Lost and Found System
+<img width="1074" height="964" alt="image" src="https://github.com/user-attachments/assets/b90e055d-d128-42f9-b744-42e7a64a164c" /># Lost and Found System
 Made as the Final Requirement for Discrete Mathematics.
 
 File Directory Guide
@@ -14,5 +14,5 @@ Project Members:
 - Antalan, Gabriel
 - [Balgomia, Austin Leiro](https://github.com/Ausiro)
 - Estaño, Raven Seth
-- Nepomuceno, Stephen Chase
+- [Nepomuceno, Stephen Chase](https://github.com/solum-magus)
 - Rocolcol, Glycel
