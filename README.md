@@ -14,8 +14,6 @@ File Directory Guide
 1. Install [TTKBootstrap](https://github.com/israel-dryer/ttkbootstrap)
 2. To view database file, download [DB Browser for SQLite](https://sqlitebrowser.org/dl/)
 
-<br>
-
 ## Project Members:
 - Antalan, Gabriel
 - [Balgomia, Austin Leiro](https://github.com/Ausiro)
