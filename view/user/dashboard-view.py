@@ -1,0 +1,1 @@
+# display recent lost and found items, activity overview(eg. pending claims, report status), etc

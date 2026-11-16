@@ -1,0 +1,1 @@
+# dedicated page displaying all items
