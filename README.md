@@ -12,7 +12,8 @@ File Directory Guide
 
 ## Setup
 1. Install [TTKBootstrap](https://github.com/israel-dryer/ttkbootstrap)
-2. To view database file, download [DB Browser for SQLite](https://sqlitebrowser.org/dl/)
+   > python -m pip install ttkbootstrap
+3. To view database file, download [DB Browser for SQLite](https://sqlitebrowser.org/dl/)
 
 ## Project Members:
 - Antalan, Gabriel
