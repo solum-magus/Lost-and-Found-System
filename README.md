@@ -1,4 +1,4 @@
-# Lost and Found System
+## Lost and Found System
 Made as the Final Requirement for Discrete Mathematics.
 
 File Directory Guide
@@ -10,15 +10,13 @@ File Directory Guide
 | controller | Handles user actions and connects the View to the Model. |
 | database   | Handles database connections and initialization.         |
 
----
-
 ## Setup
 1. Install [TTKBootstrap](https://github.com/israel-dryer/ttkbootstrap)
 2. To view database file, download [DB Browser for SQLite](https://sqlitebrowser.org/dl/)
 
 <br>
 
-Project Members:
+## Project Members:
 - Antalan, Gabriel
 - [Balgomia, Austin Leiro](https://github.com/Ausiro)
 - Estaño, Raven Seth
