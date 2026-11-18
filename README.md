@@ -20,4 +20,4 @@ File Directory Guide
 - [Balgomia, Austin Leiro](https://github.com/Ausiro)
 - Estaño, Raven Seth
 - [Nepomuceno, Stephen Chase](https://github.com/solum-magus)
-- Rocolcol, Glycel
+- [Rocolcol, Glycel](https://github.com/glycerinnn)
