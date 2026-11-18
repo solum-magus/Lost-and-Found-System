@@ -16,7 +16,7 @@ File Directory Guide
 2. To view database file, download [DB Browser for SQLite](https://sqlitebrowser.org/dl/)
 
 ## Project Members:
-- Antalan, Gabriel
+- [Antalan, Gabriel](https://github.com/gabae-sys)
 - [Balgomia, Austin Leiro](https://github.com/Ausiro)
 - Estaño, Raven Seth
 - [Nepomuceno, Stephen Chase](https://github.com/solum-magus)
