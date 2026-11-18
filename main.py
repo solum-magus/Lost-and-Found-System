@@ -5,6 +5,8 @@ from view.sidebar import Sidebar
 from view.login_view import LoginPage
 from view.signup_view import SignupPage
 from view.user.dashboard_view import DashboardPage
+from view.user.user_layout import UserLayout
+from view.admin.admin_layout import AdminLayout
 
 def show(name):
     frames[name].tkraise()
@@ -19,11 +21,12 @@ root.iconbitmap("assets/PLV.ico")
 frames = {
         "signup": SignupPage(root, show),
         "login": LoginPage(root, show),
-        "dashboard": DashboardPage(root, show),
+        "user": UserLayout(root, show),
+        "admin": AdminLayout(root, show)
     }
 
 for frame in frames.values():
     frame.place(relx=0, rely=0, relwidth=1, relheight=1)
 
-show("signup")
+show("signup") # Start with the signup page
 root.mainloop()
