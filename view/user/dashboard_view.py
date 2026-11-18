@@ -1,10 +1,18 @@
-# display recent lost and found items, activity overview(eg. pending claims, report status), etc
 import ttkbootstrap as ttk
-from ttkbootstrap.constants import *
+from view.sidebar import Sidebar
 
 
-class HomeView(ttk.Frame):
-    def __init__(self, parent):
-        super().__init__(parent, padding=20)
-        ttk.Label(self, text="Home", font=("Segoe UI", 20, "bold")).pack(anchor=W)
-        ttk.Label(self, text="This is the home page.").pack(anchor=W, pady=10)
+class DashboardPage(ttk.Frame):
+    def __init__(self, parent, show):
+        super().__init__(parent)
+
+        sidebar = Sidebar(self)
+        sidebar.pack(side="left", fill="y")
+        sidebar.add_item("Dashboard", lambda: None)
+        sidebar.add_item("Logout", lambda: show("login"))
+
+        content = ttk.Frame(self, padding=20)
+        content.pack(side="right", fill="both", expand=True)
+
+        ttk.Label(content, text="Dashboard", font=("Segoe UI", 20, "bold")).pack(anchor="w")
+        ttk.Label(content, text="Welcome!").pack(anchor="w", pady=10)
