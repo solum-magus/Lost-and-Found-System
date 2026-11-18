@@ -18,6 +18,6 @@ File Directory Guide
 ## Project Members:
 - [Antalan, Gabriel](https://github.com/gabae-sys)
 - [Balgomia, Austin Leiro](https://github.com/Ausiro)
-- Estaño, Raven Seth
+- [Estaño, Raven Seth](https://github.com/Ravennn4k)
 - [Nepomuceno, Stephen Chase](https://github.com/solum-magus)
 - [Rocolcol, Glycel](https://github.com/glycerinnn)

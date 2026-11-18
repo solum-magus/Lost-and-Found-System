@@ -35,7 +35,7 @@ def create_tables():
                 CHECK(status IN ('Active', 'Claimed', 'Returned', 'Removed')),
             date_reported DATE NOT NULL DEFAULT CURRENT_DATE,
 
-            FOREIGN KEY (user_id) REFERENCES users (user_id)
+            FOREIGN KEY (user_id) REFERENCES users (id)
         )
     ''')
 
@@ -50,7 +50,7 @@ def create_tables():
                 CHECK(claim_status IN ('Pending', 'Approved', 'Rejected')),
 
             FOREIGN KEY (item_id) REFERENCES items (item_id),
-            FOREIGN KEY (user_id) REFERENCES users (user_id)
+            FOREIGN KEY (user_id) REFERENCES users (id)
         )
     ''')
 
