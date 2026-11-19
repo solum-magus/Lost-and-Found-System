@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{# Centered card with no sidebar, used by the login and signup pages #}
+{% block body %}
+<div class="auth-wrap">
+  <div class="card auth-card shadow">
+    <div class="card-body p-4">
+      {% include "partials/flashes.html" %}
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+</div>
+{% endblock %}

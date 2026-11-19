@@ -1,7 +1,16 @@
 ## Lost and Found System
 Made as the Final Requirement for Discrete Mathematics.
 
-File Directory Guide
+File Directory Guide (UPDATED)
+| Folder    | Details                                                                      |
+|-----------|------------------------------------------------------------------------------|
+| static    | Contains resources such as images, icons, and CSS files.                     |
+| models    | Contains the functions that read and write data in the database.             |
+| templates | Contains the HTML pages.                                                     |
+| routes    | Handles user actions.                                                        |
+| database  | Handles database connections and initialization.                             |
+
+File Directory Guide (OLD)
 | Folder     | Details                                                  |
 |------------|----------------------------------------------------------|
 | assets     | Contains resources such as images, icons, etc.           |

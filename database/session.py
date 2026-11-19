@@ -1,1 +1,0 @@
-# handles session variables so system doesnt forget who is logged in

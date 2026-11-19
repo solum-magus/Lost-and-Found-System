@@ -1,0 +1,23 @@
+{% set ep = request.endpoint or '' %}
+<ul class="nav nav-pills flex-column gap-1 mb-auto">
+  <li class="nav-item">
+    <a class="nav-link {{ 'active' if ep == 'admin.dashboard' }}" href="{{ url_for('admin.dashboard') }}">
+      <i class="bi bi-speedometer2 me-2"></i>Dashboard</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link {{ 'active' if ep == 'admin.claims' }}" href="{{ url_for('admin.claims') }}">
+      <i class="bi bi-clipboard-check me-2"></i>Claims</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link {{ 'active' if ep == 'admin.users' }}" href="{{ url_for('admin.users') }}">
+      <i class="bi bi-people me-2"></i>Users</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link {{ 'active' if ep == 'shared.history' }}" href="{{ url_for('shared.history') }}">
+      <i class="bi bi-clock-history me-2"></i>History</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link {{ 'active' if ep == 'shared.settings' }}" href="{{ url_for('shared.settings') }}">
+      <i class="bi bi-gear me-2"></i>Settings</a>
+  </li>
+</ul>

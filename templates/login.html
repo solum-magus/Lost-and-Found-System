@@ -1,0 +1,22 @@
+{% extends "auth_base.html" %}
+{% block title %}Login &middot; PLV Lost and Found{% endblock %}
+
+{% block content %}
+<h4 class="text-center mb-4">Login</h4>
+
+<form method="post">
+  <div class="mb-3">
+    <label class="form-label" for="username">Username</label>
+    <input class="form-control" id="username" name="username" required autofocus>
+  </div>
+  <div class="mb-4">
+    <label class="form-label" for="password">Password</label>
+    <input class="form-control" id="password" name="password" type="password" required>
+  </div>
+  <button class="btn btn-primary w-100">Login</button>
+</form>
+
+<p class="text-center mt-3 mb-0">
+  No account? <a href="{{ url_for('auth.signup') }}">Sign up</a>
+</p>
+{% endblock %}
