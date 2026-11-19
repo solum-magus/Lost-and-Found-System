@@ -9,11 +9,11 @@ from routes import admin_routes, auth_routes, shared_routes, user_routes
 
 def create_app(test_config=None):
     app = Flask(__name__)
-    app.config.from_object(config)
+    app.config.from_object(config) # loads the config.py file and overrides with any test_config if provided
     if test_config:
         app.config.update(test_config)
 
-    connection.init_app(app)   # creates the tables if they don't exist
+    connection.init_app(app) # creates the tables if they don't exist
 
     for module in (auth_routes, user_routes, admin_routes, shared_routes):
         app.register_blueprint(module.bp)
