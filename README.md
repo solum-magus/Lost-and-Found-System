@@ -20,8 +20,8 @@ File Directory Guide (OLD)
 | database   | Handles database connections and initialization.         |
 
 ## Setup
-1. Install [TTKBootstrap](https://github.com/israel-dryer/ttkbootstrap)
-   > python -m pip install ttkbootstrap
+1. Install [Flask](https://flask.palletsprojects.com/en/stable/installation/)
+   > python -m pip install flask
 2. To view database file, download [DB Browser for SQLite](https://sqlitebrowser.org/dl/)
 
 ## Project Members:
