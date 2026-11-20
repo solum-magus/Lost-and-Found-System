@@ -4,26 +4,53 @@
 {% block content %}
 <h4 class="text-center mb-4">Sign Up</h4>
 
-<form method="post">
+{# novalidate: the server does the checking, so error messages look the same everywhere #}
+<form method="post" novalidate>
+
   <div class="mb-3">
-    <label class="form-label" for="username">Username</label>
-    <input class="form-control" id="username" name="username" required autofocus>
+    <label class="form-label" for="full_name">Full name</label>
+    <input class="form-control {{ 'is-invalid' if errors.full_name }}" id="full_name" name="full_name"
+           maxlength="100" autofocus placeholder="e.g. Juan Dela Cruz"
+           value="{{ form.get('full_name', '') }}">
+    <div class="invalid-feedback">{{ errors.full_name }}</div>
   </div>
+
   <div class="mb-3">
     <label class="form-label" for="email">Email</label>
-    <input class="form-control" id="email" name="email" type="email" required>
+    <input class="form-control {{ 'is-invalid' if errors.email }}" id="email" name="email" type="email"
+           maxlength="100" value="{{ form.get('email', '') }}" placeholder="name@example.com">
+    <div class="invalid-feedback">{{ errors.email }}</div>
+    <div class="form-text">You will use this to log in.</div>
   </div>
+
   <div class="mb-3">
-    <label class="form-label" for="role">I am a</label>
-    <select class="form-select" id="role" name="role">
-      <option>Student</option>
-      <option>Faculty</option>
+    <label class="form-label" for="role">Role</label>
+    <select class="form-select {{ 'is-invalid' if errors.role }}" id="role" name="role">
+      <!--No admin is intentional, basically we give like 1 admin account and that admin is the only one
+          who can change role of accounts to admin-->
+      {% for r in ['Student', 'Faculty'] %} 
+        <option {{ 'selected' if form.get('role') == r }}>{{ r }}</option>
+      {% endfor %}
     </select>
+    <div class="invalid-feedback">{{ errors.role }}</div>
   </div>
-  <div class="mb-4">
+
+  {# Passwords are never put back into the form after an error #}
+  <div class="mb-3">
     <label class="form-label" for="password">Password</label>
-    <input class="form-control" id="password" name="password" type="password" required>
+    <input class="form-control {{ 'is-invalid' if errors.password }}" id="password" name="password"
+           type="password" maxlength="64">
+    <div class="invalid-feedback">{{ errors.password }}</div>
+    <div class="form-text">At least 8 characters.</div>
   </div>
+
+  <div class="mb-4">
+    <label class="form-label" for="confirm">Confirm password</label>
+    <input class="form-control {{ 'is-invalid' if errors.confirm }}" id="confirm" name="confirm"
+           type="password" maxlength="64">
+    <div class="invalid-feedback">{{ errors.confirm }}</div>
+  </div>
+
   <button class="btn btn-primary w-100">Sign Up</button>
 </form>
 

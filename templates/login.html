@@ -4,15 +4,26 @@
 {% block content %}
 <h4 class="text-center mb-4">Login</h4>
 
-<form method="post">
+{% if errors.login %}
+  <div class="alert alert-danger">{{ errors.login }}</div>
+{% endif %}
+
+<form method="post" novalidate>
+
   <div class="mb-3">
-    <label class="form-label" for="username">Username</label>
-    <input class="form-control" id="username" name="username" required autofocus>
+    <label class="form-label" for="email">Email</label>
+    <input class="form-control {{ 'is-invalid' if errors.email }}" id="email" name="email" type="email"
+           autofocus value="{{ form.get('email', '') }}">
+    <div class="invalid-feedback">{{ errors.email }}</div>
   </div>
+
   <div class="mb-4">
     <label class="form-label" for="password">Password</label>
-    <input class="form-control" id="password" name="password" type="password" required>
+    <input class="form-control {{ 'is-invalid' if errors.password }}" id="password" name="password"
+           type="password">
+    <div class="invalid-feedback">{{ errors.password }}</div>
   </div>
+
   <button class="btn btn-primary w-100">Login</button>
 </form>
 

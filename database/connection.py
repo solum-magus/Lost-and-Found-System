@@ -1,7 +1,7 @@
 import sqlite3
 from flask import current_app, g
 
-path = "database/plv-laf.db"
+#path = "database/plv-laf.db"
 
 def init_app(app):
     app.teardown_appcontext(close_db)
@@ -26,8 +26,8 @@ def create_tables():
     get_db().execute('''
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT NOT NULL,
-            email TEXT NOT NULL,
+            full_name TEXT NOT NULL,
+            email TEXT NOT NULL UNIQUE,
             password TEXT NOT NULL,
             role TEXT NOT NULL DEFAULT 'Student'
                 CHECK(role IN ('Student', 'Faculty', 'Admin'))
