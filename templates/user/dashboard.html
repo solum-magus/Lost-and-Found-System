@@ -2,6 +2,89 @@
 {% block title %}Dashboard &middot; PLV Lost and Found{% endblock %}
 
 {% block content %}
+<style>
+    .dash-cards { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+    .dash-card { background: white; border-radius: 8px; padding: 16px; flex: 1;
+                 min-width: 150px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); text-align: center; }
+    .dash-card .number { font-size: 32px; font-weight: bold; }
+    .dash-section { background: white; border-radius: 8px; padding: 16px;
+                    margin-bottom: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); overflow-x: auto; }
+    .dash-section table { width: 100%; border-collapse: collapse; }
+    .dash-section th, .dash-section td { text-align: left; padding: 8px; border-bottom: 1px solid #e3e6ea; }
+    .dash-badge { padding: 2px 8px; border-radius: 10px; font-size: 12px; background: #e3e6ea; }
+    .dash-badge.Lost { background: #fde2e2; }
+    .dash-badge.Found { background: #dff3e0; }
+    .dash-badge.Pending { background: #fff3cd; }
+    .dash-badge.Approved { background: #dff3e0; }
+    .dash-badge.Rejected { background: #fde2e2; }
+    .dash-empty { color: #777; }
+</style>
+
 <h2>Dashboard</h2>
-<p>Welcome, {{ session.full_name }}!</p>
+<p>Welcome, {{ full_name }} ({{ role }})!</p>
+
+<div class="dash-cards">
+    <div class="dash-card">
+        <div class="number">{{ lost_count }}</div>
+        <div>Lost items reported</div>
+    </div>
+    <div class="dash-card">
+        <div class="number">{{ found_count }}</div>
+        <div>Found items reported</div>
+    </div>
+    <div class="dash-card">
+        <div class="number">{{ pending_count }}</div>
+        <div>Pending claims</div>
+    </div>
+</div>
+
+<div class="dash-section">
+    <h3>My Reported Items</h3>
+    {% if my_items %}
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Location</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Date</th>
+        </tr>
+        {% for item in my_items %}
+        <tr>
+            <td>{{ item["name"] }}</td>
+            <td>{{ item["category"] }}</td>
+            <td>{{ item["location"] }}</td>
+            <td><span class="dash-badge {{ item['item_status'] }}">{{ item["item_status"] }}</span></td>
+            <td>{{ item["status"] }}</td>
+            <td>{{ item["date_reported"] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p class="dash-empty">You haven't reported any items yet.</p>
+    {% endif %}
+</div>
+
+<div class="dash-section">
+    <h3>My Claims</h3>
+    {% if my_claims %}
+    <table>
+        <tr>
+            <th>Item</th>
+            <th>Date</th>
+            <th>Status</th>
+        </tr>
+        {% for claim in my_claims %}
+        <tr>
+            <td>{{ claim["name"] }}</td>
+            <td>{{ claim["claim_date"] }}</td>
+            <td><span class="dash-badge {{ claim['claim_status'] }}">{{ claim["claim_status"] }}</span></td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p class="dash-empty">You haven't made any claims yet.</p>
+    {% endif %}
+</div>
 {% endblock %}
