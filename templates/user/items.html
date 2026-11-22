@@ -34,7 +34,7 @@
           </div>
 
           <div class="row">
-            <div class="col-md-6 mb-3">
+            <div class="mb-3">
               <label class="form-label" for="category">Category</label>
               <select class="form-select {{ 'is-invalid' if errors.category }}" id="category" name="category">
                 {% for c in categories %}
@@ -42,12 +42,6 @@
                 {% endfor %}
               </select>
               <div class="invalid-feedback">{{ errors.category }}</div>
-            </div>
-            <div class="col-md-6 mb-3">
-              <label class="form-label" for="color">Color <span class="text-body-secondary">(optional)</span></label>
-              <input class="form-control {{ 'is-invalid' if errors.color }}" id="color" name="color" maxlength="30"
-                     value="{{ form.get('color', '') }}">
-              <div class="invalid-feedback">{{ errors.color }}</div>
             </div>
           </div>
 

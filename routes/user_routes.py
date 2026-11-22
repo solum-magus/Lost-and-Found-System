@@ -78,8 +78,6 @@ def validate_item(form):
     elif len(form["location"]) > 100:
         errors["location"] = "Location must be at most 100 characters."
 
-    if len(form["color"]) > 30:
-        errors["color"] = "Color must be at most 30 characters."
     if len(form["description"]) > 500:
         errors["description"] = "Description must be at most 500 characters."
 
@@ -94,12 +92,12 @@ def items():
     if request.method == "POST":
         # " ".join(x.split()) trims the ends and collapses repeated spaces
         form = {key: " ".join(request.form.get(key, "").split())
-                for key in ("name", "item_status", "category", "color", "location", "description")}
+                for key in ("name", "item_status", "category", "location", "description")}
         errors = validate_item(form)
 
         if not errors:
             item_id = item_model.create(session["user_id"], form["name"], form["category"],
-                                        form["description"], form["color"], form["location"],
+                                        form["description"], form["location"],
                                         form["item_status"])
             flash("Item reported.", "success")
             return redirect(url_for("user.item_matches", item_id=item_id))   # show matches next
