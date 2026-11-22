@@ -6,6 +6,11 @@
   min-width: 0; /* lets wide tables scroll instead of stretching the page */
 }
 
+/* ---------- General ---------- */
+.card {
+  background: var(--bs-tertiary-bg);
+}
+
 /* ---------- Sidebar ---------- */
 .sidebar {
   width: 250px;
@@ -82,7 +87,7 @@
   font-weight: bold;
 }
 
-.dash-section {
+.dash-section { /* dash-section also affects the table in items page */
   padding: 16px;
   margin-bottom: 24px;
   overflow-x: auto;
