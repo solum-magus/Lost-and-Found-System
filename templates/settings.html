@@ -2,6 +2,89 @@
 {% block title %}Settings &middot; PLV Lost and Found{% endblock %}
 
 {% block content %}
-<h2>Settings</h2>
-<p>This is the settings page.</p>
+<div class="mx-auto" style="max-width: 520px;">
+
+  <h2 class="mb-4 text-center">Settings</h2>
+
+  <div class="d-flex flex-column gap-4">
+
+    {# ---------- Appearance ---------- #}
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Appearance</h5>
+        <div class="form-check form-switch fs-5 mb-0">
+          <input class="form-check-input" type="checkbox" role="switch" id="darkSwitch">
+          <label class="form-check-label" for="darkSwitch">Dark mode</label>
+        </div>
+      </div>
+    </div>
+
+    {# ---------- Profile ---------- #}
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Profile</h5>
+        <form method="post" action="{{ url_for('shared.update_profile') }}" novalidate>
+          <div class="mb-3">
+            <label class="form-label" for="full_name">Full name</label>
+            <input class="form-control {{ 'is-invalid' if errors.full_name }}" id="full_name" name="full_name"
+                   maxlength="100" value="{{ form.get('full_name', user.full_name) }}">
+            <div class="invalid-feedback">{{ errors.full_name }}</div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="email">Email</label>
+            <input class="form-control {{ 'is-invalid' if errors.email }}" id="email" name="email" type="email"
+                   maxlength="100" value="{{ form.get('email', user.email) }}">
+            <div class="invalid-feedback">{{ errors.email }}</div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Role</label>
+            <input class="form-control" value="{{ user.role }}" disabled>
+          </div>
+          <button class="btn btn-primary">Save changes</button>
+        </form>
+      </div>
+    </div>
+
+    {# ---------- Password ---------- #}
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Change password</h5>
+        <form method="post" action="{{ url_for('shared.update_password') }}" novalidate>
+          <div class="mb-3">
+            <label class="form-label" for="current">Current password</label>
+            <input class="form-control {{ 'is-invalid' if errors.current }}" id="current" name="current"
+                   type="password" maxlength="64">
+            <div class="invalid-feedback">{{ errors.current }}</div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="new">New password</label>
+            <input class="form-control {{ 'is-invalid' if errors.new }}" id="new" name="new"
+                   type="password" maxlength="64">
+            <div class="invalid-feedback">{{ errors.new }}</div>
+            <div class="form-text">At least 8 characters.</div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="confirm">Confirm new password</label>
+            <input class="form-control {{ 'is-invalid' if errors.confirm }}" id="confirm" name="confirm"
+                   type="password" maxlength="64">
+            <div class="invalid-feedback">{{ errors.confirm }}</div>
+          </div>
+          <button class="btn btn-primary">Change password</button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  var darkSwitch = document.getElementById("darkSwitch");
+  darkSwitch.checked = document.documentElement.getAttribute("data-bs-theme") === "dark";
+
+  darkSwitch.addEventListener("change", function () {
+    var theme = darkSwitch.checked ? "dark" : "light";
+    localStorage.setItem("theme", theme);
+    document.documentElement.setAttribute("data-bs-theme", theme);
+  });
+</script>
 {% endblock %}

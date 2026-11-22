@@ -2,24 +2,6 @@
 {% block title %}Dashboard &middot; PLV Lost and Found{% endblock %}
 
 {% block content %}
-<style>
-    .dash-cards { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
-    .dash-card { background: white; border-radius: 8px; padding: 16px; flex: 1;
-                 min-width: 150px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); text-align: center; }
-    .dash-card .number { font-size: 32px; font-weight: bold; }
-    .dash-section { background: white; border-radius: 8px; padding: 16px;
-                    margin-bottom: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); overflow-x: auto; }
-    .dash-section table { width: 100%; border-collapse: collapse; }
-    .dash-section th, .dash-section td { text-align: left; padding: 8px; border-bottom: 1px solid #e3e6ea; }
-    .dash-badge { padding: 2px 8px; border-radius: 10px; font-size: 12px; background: #e3e6ea; }
-    .dash-badge.Lost { background: #fde2e2; }
-    .dash-badge.Found { background: #dff3e0; }
-    .dash-badge.Pending { background: #fff3cd; }
-    .dash-badge.Approved { background: #dff3e0; }
-    .dash-badge.Rejected { background: #fde2e2; }
-    .dash-empty { color: #777; }
-</style>
-
 <h2>Dashboard</h2>
 <p>Welcome, {{ full_name }} ({{ role }})!</p>
 
