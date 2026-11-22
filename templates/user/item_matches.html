@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Possible matches &middot; PLV Lost and Found{% endblock %}
+
+{% block content %}
+<h2 class="mb-1">Possible matches</h2>
+<p class="text-body-secondary">
+  Comparing your <span class="dash-badge {{ item['item_status'] }}">{{ item["item_status"] }}</span>
+  report <strong>{{ item["name"] }}</strong> with {{ opposite }} reports in the
+  <strong>{{ item["category"] }}</strong> category.
+</p>
+
+<div class="dash-section">
+  <h5>Your item as a set of words</h5>
+  <p class="mb-0">
+    <code>A = { {{ my_words|join(", ") }} }</code>
+    &nbsp;(<code>|A| = {{ my_words|length }}</code>)
+  </p>
+</div>
+
+<div class="dash-section">
+  <h5>Matches</h5>
+  {% if matches %}
+  <table>
+        <tr><th>Item</th><th>Location</th><th>Date</th><th>In common (A &cap; B)</th><th>Only in yours (A &minus; B)</th><th>Only in theirs (B &minus; A)</th><th>Similarity</th></tr>
+        {% for other, score, shared, only_mine, only_theirs in matches %}
+    <tr>
+      <td>{{ other["name"] }}</td>
+      <td>{{ other["location"] }}</td>
+      <td>{{ other["date_reported"] }}</td>
+      <td>{% for w in shared %}<span class="dash-badge me-1">{{ w }}</span>{% endfor %}</td>
+      <td>{% for w in only_mine %}<span class="dash-badge me-1">{{ w }}</span>{% endfor %}</td>
+      <td>{% for w in only_theirs %}<span class="dash-badge me-1">{{ w }}</span>{% endfor %}</td>
+      <td><strong>{{ (score * 100)|round|int }}%</strong></td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <p class="dash-empty mb-0">No similar {{ opposite|lower }} reports yet. Check back later.</p>
+  {% endif %}
+</div>
+
+<div class="dash-section">
+  <h5>How the similarity is computed</h5>
+  <p class="mb-1">Each item becomes a set of words. For your set <code>A</code> and another item's set <code>B</code>:</p>
+  <p class="mb-1"><code>similarity = |A &cap; B| / |A &cup; B|</code> (the Jaccard index)</p>
+  <p class="mb-0 text-body-secondary">Only items of the opposite type and the same category are compared.</p>
+</div>
+
+<a class="btn btn-outline-secondary" href="{{ url_for('user.item_matches', item_id=item['item_id']) }}" hidden></a>
+<a class="btn btn-outline-secondary" href="{{ url_for('user.items') }}">Back to Items</a>
+{% endblock %}
