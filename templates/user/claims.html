@@ -4,62 +4,74 @@
 {% block content %}
 <h2 class="mb-4">Claims</h2>
 
-{# ---------- Claim form ---------- #}
-<div class="card mb-4" style="max-width: 640px;">
-  <div class="card-body">
-    <h5 class="card-title">Claim an item</h5>
+<div class="row g-4">
 
-    <form method="post" novalidate>
+  {# ---------- Left: claim form ---------- #}
+  <div class="col-xl-5">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title mb-3">Claim an item</h5>
 
-      <div class="mb-3">
-        <label class="form-label" for="item_id">Item ID</label>
-        <input class="form-control {{ 'is-invalid' if errors.item_id }}" id="item_id" name="item_id"
-               placeholder="e.g. 5" value="{{ form.item_id }}">
-        <div class="invalid-feedback">{{ errors.item_id }}</div>
-        <div class="form-text">You can find the ID on the History page.</div>
+        <form method="post" novalidate>
+
+          <div class="mb-3">
+            <label class="form-label" for="item_id">Item ID</label>
+            <input class="form-control {{ 'is-invalid' if errors.item_id }}" id="item_id" name="item_id"
+                   placeholder="e.g. 5" value="{{ form.item_id }}">
+            <div class="invalid-feedback">{{ errors.item_id }}</div>
+            <div class="form-text">You can find the ID on the History page.</div>
+          </div>
+
+          {% if item %}
+          <div class="alert alert-secondary">
+            <strong>{{ item["name"] }}</strong> &middot; {{ item["category"] }}<br>
+            <span class="small">Found at {{ item["location"] }} on {{ item["date_reported"] }}</span>
+          </div>
+          {% endif %}
+
+          <div class="mb-3">
+            <label class="form-label" for="proof_description">Proof of ownership</label>
+            <textarea class="form-control {{ 'is-invalid' if errors.proof_description }}" id="proof_description"
+                      name="proof_description" rows="4" maxlength="500"
+                      placeholder="Describe marks, contents, serial number, etc. only the owner would know...">{{ form.proof_description }}</textarea>
+            <div class="invalid-feedback">{{ errors.proof_description }}</div>
+            <div class="form-text">At least 10 characters.</div>
+          </div>
+
+          <button class="btn btn-primary w-100">Submit claim</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  {# ---------- Right: my claims, one row per claim ---------- #}
+  <div class="col-xl-7">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">My claims</h5>
+        <span class="text-body-secondary small">{{ my_claims|length }} total</span>
       </div>
 
-      {% if item %}
-      <div class="alert alert-secondary">
-        <strong>{{ item["name"] }}</strong> &middot; {{ item["category"] }}<br>
-        <span class="small">Found at {{ item["location"] }} on {{ item["date_reported"] }}</span>
+      {% if my_claims %}
+      <ul class="list-group list-group-flush">
+        {% for c in my_claims %}
+        <li class="list-group-item d-flex justify-content-between align-items-start gap-3">
+          <div>
+            <div class="fw-semibold">{{ c["item_name"] }}</div>
+            <div class="small text-body-secondary">Claimed on {{ c["claim_date"] }}</div>
+            <div class="small mt-1">{{ c["proof_description"] }}</div>
+          </div>
+          <span class="dash-badge {{ c['claim_status'] }}">{{ c["claim_status"] }}</span>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <div class="card-body">
+        <p class="dash-empty mb-0">You haven't made any claims yet.</p>
       </div>
       {% endif %}
-
-      <div class="mb-3">
-        <label class="form-label" for="proof_description">Proof of ownership</label>
-        <textarea class="form-control {{ 'is-invalid' if errors.proof_description }}" id="proof_description"
-                  name="proof_description" rows="3" maxlength="500"
-                  placeholder="Describe marks, contents, serial number, etc. only the owner would know...">{{ form.proof_description }}</textarea>
-        <div class="invalid-feedback">{{ errors.proof_description }}</div>
-      </div>
-
-      <button class="btn btn-primary">Submit claim</button>
-    </form>
+    </div>
   </div>
-</div>
 
-{# ---------- My claims ---------- #}
-<div class="dash-section">
-  <h5>My claims</h5>
-  {% if my_claims %}
-  <table>
-    <tr><th>Item</th><th>Proof</th><th>Date</th><th>Status</th></tr>
-    {% for c in my_claims %}
-    <tr>
-      <td>{{ c["item_name"] }}</td>
-      <td>{{ c["proof_description"] }}</td>
-      <td>{{ c["claim_date"] }}</td>
-      <td>
-        {% if c["claim_status"] == "Approved" %}<span class="badge text-bg-success">Approved</span>
-        {% elif c["claim_status"] == "Rejected" %}<span class="badge text-bg-danger">Rejected</span>
-        {% else %}<span class="badge text-bg-warning">Pending</span>{% endif %}
-      </td>
-    </tr>
-    {% endfor %}
-  </table>
-  {% else %}
-  <p class="dash-empty mb-0">You haven't made any claims yet.</p>
-  {% endif %}
 </div>
 {% endblock %}
