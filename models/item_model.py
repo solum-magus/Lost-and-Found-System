@@ -35,3 +35,11 @@ def set_status(item_id, status):
     db = get_db()
     db.execute("UPDATE items SET status = ? WHERE item_id = ?", (status, item_id))
     db.commit()
+
+def all_reports(item_status=None):
+    """Every report from every user, newest first. Pass 'Lost' or 'Found' to filter."""
+    if item_status in ("Lost", "Found"):
+        return get_db().execute(
+            "SELECT * FROM items WHERE item_status = ? ORDER BY item_id DESC", (item_status,)
+        ).fetchall()
+    return get_db().execute("SELECT * FROM items ORDER BY item_id DESC").fetchall()

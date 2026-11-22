@@ -1,7 +1,7 @@
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash
 
-from models import user_model
+from models import item_model, user_model
 from routes.auth_routes import (EMAIL_RE, NAME_MAX, NAME_MIN, PASSWORD_MAX,
                                 PASSWORD_MIN, valid_name)
 from routes.utils import login_required
@@ -12,7 +12,9 @@ bp = Blueprint("shared", __name__)
 @bp.route("/history")
 @login_required
 def history():
-    return render_template("history.html")
+    type_filter = request.args.get("type", "")          
+    return render_template("history.html", reports=item_model.all_reports(type_filter),
+                           type_filter=type_filter)
 
 
 @bp.route("/settings")
