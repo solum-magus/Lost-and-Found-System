@@ -2,7 +2,6 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from database.connection import get_db
 
-
 def create(full_name, email, password, role="Student"):
     db = get_db()
     db.execute(
@@ -26,3 +25,25 @@ def authenticate(email, password):
     if user and check_password_hash(user["password"], password):
         return user
     return None
+
+def get_by_id(user_id):
+    return get_db().execute("SELECT * FROM users WHERE id = ?", (user_id,)).fetchone()
+
+
+def email_taken_by_other(email, user_id):
+    """True if someone ELSE already uses this email (your own email doesn't count)."""
+    return get_db().execute(
+        "SELECT 1 FROM users WHERE lower(email) = lower(?) AND id != ?", (email, user_id)
+    ).fetchone() is not None
+
+
+def update_profile(user_id, full_name, email):
+    db = get_db()
+    db.execute("UPDATE users SET full_name = ?, email = ? WHERE id = ?", (full_name, email, user_id))
+    db.commit()
+
+
+def update_password(user_id, new_password):
+    db = get_db()
+    db.execute("UPDATE users SET password = ? WHERE id = ?", (generate_password_hash(new_password), user_id))
+    db.commit()

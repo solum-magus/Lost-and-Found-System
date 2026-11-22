@@ -11,6 +11,12 @@
   min-width: 250px;
   background: var(--bs-tertiary-bg);
   border-right: 1px solid var(--bs-border-color);
+
+  position: sticky;      /* stays in place while the page scrolls */
+  top: 0;
+  height: 100vh;         /* exactly one screen tall */
+  align-self: flex-start;
+  overflow-y: auto;      /* only scrolls inside itself if the window is very short */
 }
 
 .sidebar .nav-link {
@@ -44,5 +50,7 @@
     min-width: 0;
     border-right: 0;
     border-bottom: 1px solid var(--bs-border-color);
+    position: static;
+    height: auto;
   }
 }
