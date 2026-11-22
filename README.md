@@ -10,15 +10,6 @@ File Directory Guide (UPDATED)
 | routes    | Handles user actions.                                                        |
 | database  | Handles database connections and initialization.                             |
 
-File Directory Guide (OLD)
-| Folder     | Details                                                  |
-|------------|----------------------------------------------------------|
-| assets     | Contains resources such as images, icons, etc.           |
-| model      | Contains classes representing data and objects.          |
-| view       | Contains the GUI, forms, tables, buttons, and screens.   |
-| controller | Handles user actions.                                    |
-| database   | Handles database connections and initialization.         |
-
 ## Setup
 1. Install [Flask](https://flask.palletsprojects.com/en/stable/installation/)
    > python -m pip install flask
