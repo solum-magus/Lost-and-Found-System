@@ -4,98 +4,111 @@
 {% block content %}
 <h2 class="mb-4">Items</h2>
 
-{# ---------- Report form ---------- #}
-<div class="card mb-4" style="max-width: 640px;">
-  <div class="card-body">
-    <h5 class="card-title">Report an item</h5>
+<div class="row g-4">
 
-    <form method="post" novalidate>
+  {# ---------- Left: report form ---------- #}
+  <div class="col-xl-5">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title mb-3">Report an item</h5>
 
-      <div class="mb-3">
-        <label class="form-label d-block">What happened?</label>
-        <div class="btn-group" role="group">
-          {% for t in ['Lost', 'Found'] %}
-          <input type="radio" class="btn-check" name="item_status" id="type_{{ t }}" value="{{ t }}"
-                 {{ 'checked' if form.get('item_status', 'Lost') == t }}>
-          <label class="btn btn-outline-primary" for="type_{{ t }}">I {{ t|lower }} an item</label>
-          {% endfor %}
-        </div>
-        {% if errors.item_status %}<div class="text-danger small mt-1">{{ errors.item_status }}</div>{% endif %}
-      </div>
+        <form method="post" novalidate>
 
-      <div class="mb-3">
-        <label class="form-label" for="name">Item name</label>
-        <input class="form-control {{ 'is-invalid' if errors.name }}" id="name" name="name" maxlength="100"
-               placeholder="e.g. Black wallet" value="{{ form.get('name', '') }}">
-        <div class="invalid-feedback">{{ errors.name }}</div>
-      </div>
+          <div class="mb-3">
+            <label class="form-label d-block">What happened?</label>
+            <div class="btn-group w-100" role="group">
+              {% for t in ['Lost', 'Found'] %}
+              <input type="radio" class="btn-check" name="item_status" id="type_{{ t }}" value="{{ t }}"
+                     {{ 'checked' if form.get('item_status', 'Lost') == t }}>
+              <label class="btn btn-outline-primary" for="type_{{ t }}">I {{ t|lower }} an item</label>
+              {% endfor %}
+            </div>
+            {% if errors.item_status %}<div class="text-danger small mt-1">{{ errors.item_status }}</div>{% endif %}
+          </div>
 
-      <div class="row">
-        <div class="col-md-6 mb-3">
-          <label class="form-label" for="category">Category</label>
-          <select class="form-select {{ 'is-invalid' if errors.category }}" id="category" name="category">
-            {% for c in categories %}
-            <option {{ 'selected' if form.get('category') == c }}>{{ c }}</option>
-            {% endfor %}
-          </select>
-          <div class="invalid-feedback">{{ errors.category }}</div>
-        </div>
-        <div class="col-md-6 mb-3">
-          <label class="form-label" for="color">Color <span class="text-body-secondary">(optional)</span></label>
-          <input class="form-control {{ 'is-invalid' if errors.color }}" id="color" name="color" maxlength="30"
-                 value="{{ form.get('color', '') }}">
-          <div class="invalid-feedback">{{ errors.color }}</div>
-        </div>
-      </div>
+          <div class="mb-3">
+            <label class="form-label" for="name">Item name</label>
+            <input class="form-control {{ 'is-invalid' if errors.name }}" id="name" name="name" maxlength="100"
+                   placeholder="e.g. Black wallet" value="{{ form.get('name', '') }}">
+            <div class="invalid-feedback">{{ errors.name }}</div>
+          </div>
 
-      <div class="mb-3">
-        <label class="form-label" for="location">Where was it lost / found?</label>
-        <input class="form-control {{ 'is-invalid' if errors.location }}" id="location" name="location"
-               maxlength="100" placeholder="e.g. Library, 2nd floor" value="{{ form.get('location', '') }}">
-        <div class="invalid-feedback">{{ errors.location }}</div>
-      </div>
+          <div class="row">
+            <div class="mb-3">
+              <label class="form-label" for="category">Category</label>
+              <select class="form-select {{ 'is-invalid' if errors.category }}" id="category" name="category">
+                {% for c in categories %}
+                <option {{ 'selected' if form.get('category') == c }}>{{ c }}</option>
+                {% endfor %}
+              </select>
+              <div class="invalid-feedback">{{ errors.category }}</div>
+            </div>
+          </div>
 
-      <div class="mb-3">
-        <label class="form-label" for="description">Description <span class="text-body-secondary">(optional)</span></label>
-        <textarea class="form-control {{ 'is-invalid' if errors.description }}" id="description" name="description"
-                  rows="3" maxlength="500" placeholder="Brand, marks, what is inside...">{{ form.get('description', '') }}</textarea>
-        <div class="invalid-feedback">{{ errors.description }}</div>
-        <div class="form-text">More detail helps us find a match.</div>
-      </div>
+          <div class="mb-3">
+            <label class="form-label" for="location">Where was it lost / found?</label>
+            <input class="form-control {{ 'is-invalid' if errors.location }}" id="location" name="location"
+                   maxlength="100" placeholder="e.g. Library, 2nd floor" value="{{ form.get('location', '') }}">
+            <div class="invalid-feedback">{{ errors.location }}</div>
+          </div>
 
-      <button class="btn btn-primary">Submit report</button>
-    </form>
-  </div>
-</div>
+          <div class="mb-3">
+            <label class="form-label" for="description">Description <span class="text-body-secondary">(optional)</span></label>
+            <textarea class="form-control {{ 'is-invalid' if errors.description }}" id="description" name="description"
+                      rows="3" maxlength="500" placeholder="Brand, marks, what is inside...">{{ form.get('description', '') }}</textarea>
+            <div class="invalid-feedback">{{ errors.description }}</div>
+            <div class="form-text">More detail helps us find a match.</div>
+          </div>
 
-{# ---------- My reports ---------- #}
-<div class="dash-section">
-  <h5>My reported items</h5>
-  {% if my_items %}
-  <table>
-    <tr><th>Name</th><th>Category</th><th>Location</th><th>Type</th><th>Status</th><th>Date</th><th>Actions</th></tr>
-    {% for item in my_items %}
-    <tr>
-      <td>{{ item["name"] }}</td>
-      <td>{{ item["category"] }}</td>
-      <td>{{ item["location"] }}</td>
-      <td><span class="dash-badge {{ item['item_status'] }}">{{ item["item_status"] }}</span></td>
-      <td>{{ item["status"] }}</td>
-      <td>{{ item["date_reported"] }}</td>
-      <td class="text-nowrap">
-        {% if item["status"] == "Active" %}
-        <a class="btn btn-sm btn-outline-primary" href="{{ url_for('user.item_matches', item_id=item['item_id']) }}">View Matches</a>
-        <form method="post" action="{{ url_for('user.remove_item', item_id=item['item_id']) }}" class="d-inline"
-              onsubmit="return confirm('Remove this report? It will no longer be matched.');">
-          <button class="btn btn-sm btn-outline-danger">Remove</button>
+          <button class="btn btn-primary w-100">Submit report</button>
         </form>
-        {% endif %}
-      </td>
-    </tr>
-    {% endfor %}
-  </table>
-  {% else %}
-  <p class="dash-empty mb-0">You haven't reported any items yet.</p>
-  {% endif %}
+      </div>
+    </div>
+  </div>
+
+  {# ---------- Right: my reports, one row per item (no wide table) ---------- #}
+  <div class="col-xl-7">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">My reported items</h5>
+        <span class="text-body-secondary small">{{ my_items|length }} total</span>
+      </div>
+
+      {% if my_items %}
+      <ul class="list-group list-group-flush">
+        {% for item in my_items %}
+        <li class="list-group-item d-flex justify-content-between align-items-start gap-3
+                   {{ 'text-body-secondary' if item['status'] != 'Active' }}">
+          <div>
+            <div class="fw-semibold">
+              {{ item["name"] }}
+              <span class="dash-badge ms-1 {{ item['item_status'] }}">{{ item["item_status"] }}</span>
+              {% if item["status"] != "Active" %}<span class="dash-badge ms-1">{{ item["status"] }}</span>{% endif %}
+            </div>
+            <div class="small text-body-secondary">
+              {{ item["category"] }} &middot; {{ item["location"] }} &middot; {{ item["date_reported"] }}
+            </div>
+          </div>
+
+          {% if item["status"] == "Active" %}
+          <div class="text-nowrap">
+            <a class="btn btn-sm btn-outline-primary" href="{{ url_for('user.item_matches', item_id=item['item_id']) }}">Matches</a>
+            <form method="post" action="{{ url_for('user.remove_item', item_id=item['item_id']) }}" class="d-inline"
+                  onsubmit="return confirm('Remove this report? It will no longer be matched.');">
+              <button class="btn btn-sm btn-outline-danger">Remove</button>
+            </form>
+          </div>
+          {% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <div class="card-body">
+        <p class="dash-empty mb-0">You haven't reported any items yet.</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
 </div>
 {% endblock %}

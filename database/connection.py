@@ -41,7 +41,6 @@ def create_tables():
             name TEXT NOT NULL,
             category TEXT NOT NULL,
             description TEXT,
-            color TEXT,
             location TEXT NOT NULL,
             item_status TEXT NOT NULL
                 CHECK(item_status IN ('Lost', 'Found')),

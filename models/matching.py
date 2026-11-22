@@ -26,8 +26,7 @@ def words(text):
 
 def item_words(item):
     """The set of words that describe one item: union of its fields' word sets."""
-    return (words(item["name"]) | words(item["color"]) | words(item["location"])
-            | words(item["description"]))
+    return (words(item["name"]) | words(item["location"]) | words(item["description"]))
 
 
 def jaccard(a, b):
