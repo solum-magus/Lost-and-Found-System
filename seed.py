@@ -5,7 +5,8 @@ from models import user_model
 
 ACCOUNTS = [
     ("System Admin", "admin@plv.edu.ph", "admin123", "Admin"),
-    ("PLV Student", "student@plv.edu.ph", "user123", "Student"),
+    ("PLV Student", "student@plv.edu.ph", "student123", "Student"),
+    ("Faculty Staff", "faculty@plv.edu.ph", "faculty123", "Faculty")
 ]
 
 app = create_app()
