@@ -26,7 +26,7 @@
 <div class="app-shell d-flex">
 
   <!-- Sidebar: written once, shown on every page that extends base.html -->
-  <aside class="sidebar" data-bs-theme="dark">
+    <aside class="sidebar offcanvas-md offcanvas-start" id="sidebar" tabindex="-1">
     <div class="sidebar-brand">
       <img src="{{ url_for('static', filename='PLV.png') }}" alt="PLV logo" height="80"
            onerror="this.style.display='none'">
@@ -47,6 +47,12 @@
 
     <!-- Top bar: search on the left, account menu on the right -->
     <header class="topbar d-flex align-items-center justify-content-between gap-3">
+    <!-- Menu button only for phones-->
+    <button class="btn btn-outline-secondary d-md-none" type="button" data-bs-toggle="offcanvas"
+            data-bs-target="#sidebar" aria-controls="sidebar" aria-label="Open menu">
+      <i class="bi bi-list fs-5"></i>
+    </button>
+
       <form class="topbar-search" action="{{ url_for('shared.reports') }}" method="get" role="search">
         <i class="bi bi-search"></i>
         <input class="form-control" type="search" name="q" maxlength="100" placeholder="Search items..."
@@ -72,7 +78,7 @@
       </div>
     </header>
 
-    <main class="p-5">
+    <main class="p-3 p-md-5">
       {% include "partials/flashes.html" %}
       {% block content %}{% endblock %}
     </main>

@@ -78,16 +78,28 @@
 /* Always navy, in both themes. data-bs-theme="dark" on the <aside> makes
    everything inside use the dark colors even when the page is in light mode. */
 .sidebar {
+  --bs-offcanvas-width: 250px;   /* how wide the drawer is on phones (Bootstrap's default is 400px) */
   width: 250px;
   min-width: 250px;
-  background: #031033;
   color: #fff;
-
-  position: sticky;      /* stays in place while the page scrolls */
-  top: 0;
-  height: 100vh;         /* exactly one screen tall */
-  align-self: flex-start;
   overflow-y: auto;      /* only scrolls inside itself if the window is very short */
+}
+
+/* "!important" is needed because Bootstrap's offcanvas-md class forces a transparent
+   background on wide screens. */
+.sidebar {
+  background: #031033 !important;
+}
+
+/* Wide screens: the sidebar sits beside the page and stays in place while it scrolls.
+   (On phones, Bootstrap turns it into a slide-in drawer, so none of this applies.) */
+@media (min-width: 768px) {
+  .sidebar {
+    position: sticky;
+    top: 0;
+    height: 100vh;       /* exactly one screen tall */
+    align-self: flex-start;
+  }
 }
 
 /* Top part: centered logo, name and school, with a line underneath */
@@ -196,20 +208,6 @@
 .auth-card {
   width: 100%;
   max-width: 420px;
-}
-
-/* ---------- Responsiveness ---------- */
-@media (max-width: 768px) {
-  .app-shell {
-    flex-direction: column;
-  }
-
-  .sidebar {
-    width: 100%;
-    min-width: 0;
-    position: static;
-    height: auto;
-  }
 }
 
 /* ---------- Dashboard ---------- */
