@@ -1,8 +1,72 @@
 {% extends "base.html" %}
-{% block title %}Admin Dashboard &middot; PLV Lost and Found
-{% endblock %}
+{% block title %}Dashboard &middot; PLV Lost and Found{% endblock %}
 
 {% block content %}
-<h2>Admin Dashboard</h2>
-<p>Welcome, {{ session.full_name }}!</p>
+<h2>Dashboard</h2>
+<p>Welcome, {{ full_name }} ({{ role }})!</p>
+
+<div class="dash-cards">
+    <div class="dash-card">
+        <div class="number">{{ lost_count }}</div>
+        <div>Lost items reported</div>
+    </div>
+    <div class="dash-card">
+        <div class="number">{{ found_count }}</div>
+        <div>Found items reported</div>
+    </div>
+    <div class="dash-card">
+        <div class="number">{{ pending_count }}</div>
+        <div>Pending claims</div>
+    </div>
+</div>
+
+<div class="dash-section">
+    <h3>My Reported Items</h3>
+    {% if my_items %}
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Location</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Date</th>
+        </tr>
+        {% for item in my_items %}
+        <tr>
+            <td>{{ item["name"] }}</td>
+            <td>{{ item["category"] }}</td>
+            <td>{{ item["location"] }}</td>
+            <td><span class="dash-badge {{ item['item_status'] }}">{{ item["item_status"] }}</span></td>
+            <td>{{ item["status"] }}</td>
+            <td>{{ item["date_reported"] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p class="dash-empty">You haven't reported any items yet.</p>
+    {% endif %}
+</div>
+
+<div class="dash-section">
+    <h3>My Claims</h3>
+    {% if my_claims %}
+    <table>
+        <tr>
+            <th>Item</th>
+            <th>Date</th>
+            <th>Status</th>
+        </tr>
+        {% for claim in my_claims %}
+        <tr>
+            <td>{{ claim["name"] }}</td>
+            <td>{{ claim["claim_date"] }}</td>
+            <td><span class="dash-badge {{ claim['claim_status'] }}">{{ claim["claim_status"] }}</span></td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p class="dash-empty">You haven't made any claims yet.</p>
+    {% endif %}
+</div>
 {% endblock %}
