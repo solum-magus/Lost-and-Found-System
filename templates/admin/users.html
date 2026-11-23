@@ -2,6 +2,55 @@
 {% block title %}Users &middot; PLV Lost and Found{% endblock %}
 
 {% block content %}
-<h2>Users</h2>
-<p>This is the user management page.</p>
+<h2>User Management</h2>
+<p class="dash-empty">Change a user's role or delete users who have no items or claims.</p>
+
+<div class="dash-section">
+    {% if all_users %}
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Items</th>
+            <th>Claims</th>
+            <th>Actions</th>
+        </tr>
+        {% for user in all_users %}
+        <tr>
+            <td>{{ user["full_name"] }}{% if user["id"] == my_id %} (you){% endif %}</td>
+            <td>{{ user["email"] }}</td>
+            <td><span class="dash-badge">{{ user["role"] }}</span></td>
+            <td>{{ user["item_count"] }}</td>
+            <td>{{ user["claim_count"] }}</td>
+            <td>
+                {% if user["id"] == my_id %}
+                    <span class="dash-empty">Your account</span>
+                {% else %}
+                <form method="post" action="{{ url_for('admin.update_role', user_id=user['id']) }}"
+                      class="d-inline-flex gap-1">
+                    <select name="role" class="form-select form-select-sm">
+                        <option value="Student" {% if user["role"] == "Student" %}selected{% endif %}>Student</option>
+                        <option value="Faculty" {% if user["role"] == "Faculty" %}selected{% endif %}>Faculty</option>
+                        <option value="Admin" {% if user["role"] == "Admin" %}selected{% endif %}>Admin</option>
+                    </select>
+                    <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                </form>
+
+                {% if user["item_count"] == 0 and user["claim_count"] == 0 %}
+                <form method="post" action="{{ url_for('admin.delete_user', user_id=user['id']) }}"
+                      class="d-inline"
+                      onsubmit="return confirm('Delete this user? This cannot be undone.');">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                </form>
+                {% endif %}
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p class="dash-empty">No users found.</p>
+    {% endif %}
+</div>
 {% endblock %}

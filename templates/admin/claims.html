@@ -2,6 +2,46 @@
 {% block title %}Claims &middot; PLV Lost and Found{% endblock %}
 
 {% block content %}
-<h2>Claims</h2>
-<p>This is the admin claims page.</p>
+<h2>Claims Management</h2>
+<p class="dash-empty">Pending claims are listed first. Approving a claim marks the item as Claimed and rejects the other pending claims on it.</p>
+
+<div class="dash-section">
+    {% if all_claims %}
+    <table>
+        <tr>
+            <th>Item</th>
+            <th>Claimed by</th>
+            <th>Proof</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+        {% for claim in all_claims %}
+        <tr>
+            <td>{{ claim["item_name"] }}</td>
+            <td>{{ claim["claimant"] }}<br><small class="dash-empty">{{ claim["claimant_email"] }}</small></td>
+            <td style="white-space: pre-wrap;">{{ claim["proof_description"] }}</td>
+            <td>{{ claim["claim_date"] }}</td>
+            <td><span class="dash-badge {{ claim['claim_status'] }}">{{ claim["claim_status"] }}</span></td>
+            <td>
+                {% if claim["claim_status"] == "Pending" %}
+                <form method="post" action="{{ url_for('admin.approve_claim', claim_id=claim['claim_id']) }}"
+                      class="d-inline">
+                    <button type="submit" class="btn btn-sm btn-success">Approve</button>
+                </form>
+                <form method="post" action="{{ url_for('admin.reject_claim', claim_id=claim['claim_id']) }}"
+                      class="d-inline">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Reject</button>
+                </form>
+                {% else %}
+                <span class="dash-empty">Done</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p class="dash-empty">No claims have been made yet.</p>
+    {% endif %}
+</div>
 {% endblock %}
