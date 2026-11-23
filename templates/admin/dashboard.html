@@ -1,8 +1,93 @@
 {% extends "base.html" %}
-{% block title %}Admin Dashboard &middot; PLV Lost and Found
-{% endblock %}
+{% block title %}Dashboard &middot; PLV Lost and Found{% endblock %}
 
 {% block content %}
-<h2>Admin Dashboard</h2>
-<p>Welcome, {{ session.full_name }}!</p>
+<h2>Welcome, {{ full_name.split()[0] }}!</h2>
+<br>
+<h2 style="font-size: 1.5rem;">Admin Dashboard</h2>
+
+<div class="dash-cards">
+    <div class="dash-card">
+        <div class="number">{{ lost_count }}</div>
+        <div>Lost items reported</div>
+    </div>
+    <div class="dash-card">
+        <div class="number">{{ found_count }}</div>
+        <div>Found items reported</div>
+    </div>
+    <div class="dash-card">
+        <div class="number">{{ pending_count }}</div>
+        <div>Pending claims</div>
+    </div>
+    <div class="dash-card">
+        <div class="number">{{ resolved_count }}</div>
+        <div>Total Resolutions</div>
+    </div>
+</div>
+
+<div class="dash-section">
+    <h3>Recent User Reports</h3>
+    {% if all_items %}
+    <table>
+        <tr>
+            <th>Item ID</th>
+            <th>User ID</th>
+            <th>Item</th>
+            <th>Category</th>
+            <th>Location</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Action</th>
+        </tr>
+        {% for item in all_items %}
+        <tr>
+            <td>{{ item["item_id"] }}</td>
+            <td>{{ item["user_id"] }}</td>
+            <td>{{ item["name"] }}</td>
+            <td>{{ item["category"] }}</td>
+            <td>{{ item["location"] }}</td>
+            <td><span class="dash-badge {{ item['item_status'] }}">{{ item["item_status"] }}</span></td>
+            <td>{{ item["status"] }}</td>
+            <td>{{ item["date_reported"] }}</td>
+            <td></td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p class="dash-empty">You haven't reported any items yet.</p>
+    {% endif %}
+</div>
+
+<div class="dash-section">
+    <h3>Recent User Claims</h3>
+    {% if all_claims %}
+    <table>
+        <tr>
+            <th>Claim ID</th>
+            <th>Claimant ID</th>
+            <th>Item</th>
+            <th>Proof</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Action</th>
+        </tr>
+        {% for claim in all_claims %}
+        <tr>
+            <td></td>
+            <td></td>
+            <td>{{ claim["name"] }}</td>
+            <td></td>
+            <td>{{ claim["claim_date"] }}</td>
+            <td><span class="dash-badge {{ claim['claim_status'] }}">{{ claim["claim_status"] }}</span></td>
+            <td></td>
+            <td></td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p class="dash-empty">You haven't made any claims yet.</p>
+    {% endif %}
+</div>
 {% endblock %}
