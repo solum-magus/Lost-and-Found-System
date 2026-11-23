@@ -2,7 +2,8 @@
 {% block title %}Sign Up &middot; PLV Lost and Found{% endblock %}
 
 {% block content %}
-<h4 class="text-center mb-4">Sign Up</h4>
+<h4 class="text-center">Get Started</h4>
+<div class="text-center mb-4">Reuniting lost items with their owners</div>
 
 {# novalidate: the server does the checking, so error messages look the same everywhere #}
 <form method="post" novalidate>
@@ -45,11 +46,11 @@
   <div class="mb-4">
     <label class="form-label" for="confirm">Confirm password</label>
     <input class="form-control {{ 'is-invalid' if errors.confirm }}" id="confirm" name="confirm"
-           type="password" maxlength="64">
+           type="password" maxlength="64" placeholder="Confirm your password">
     <div class="invalid-feedback">{{ errors.confirm }}</div>
   </div>
 
-  <button class="btn btn-primary w-100">Sign Up</button>
+  <button class="btn btn-primary w-100 fw-bold">Sign Up</button>
 </form>
 
 <p class="text-center mt-3 mb-0">

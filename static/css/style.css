@@ -11,6 +11,69 @@
   background: var(--bs-tertiary-bg);
 }
 
+.btn-primary {
+  --bs-btn-color: #ffffff;
+  --bs-btn-bg: #66ab5d;
+  --bs-btn-border-color: #66ab5d;
+  --bs-btn-hover-color: #ffffff;
+  --bs-btn-hover-bg: #5a9a52;
+  --bs-btn-hover-border-color: #5a9a52;
+  --bs-btn-active-color: #ffffff;
+  --bs-btn-active-bg: #4f8948;
+  --bs-btn-active-border-color: #4f8948;
+  --bs-btn-focus-shadow-rgb: 102, 171, 93;
+  --bs-btn-disabled-color: #ffffff;
+  --bs-btn-disabled-bg: #66ab5d;
+  --bs-btn-disabled-border-color: #66ab5d;
+}
+.btn-outline-primary {
+  --bs-btn-color: #66AB5D;
+  --bs-btn-border-color: #66AB5D;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #66AB5D;
+  --bs-btn-hover-border-color: #66AB5D;
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #66AB5D;
+  --bs-btn-active-border-color: #66AB5D;
+  --bs-btn-focus-shadow-rgb: 102, 171, 93;
+}
+.form-check-input:checked {
+  background-color: #66ab5d;
+  border-color: #66ab5d;
+  box-shadow: none !important;
+}
+
+/* Light mode */
+[data-bs-theme="light"] .btn-primary {
+  --bs-btn-color: #000;
+  --bs-btn-bg: #FCF127;
+  --bs-btn-border-color: #FCF127;
+  --bs-btn-hover-color: #000;
+  --bs-btn-hover-bg: #E6DB1F;
+  --bs-btn-hover-border-color: #D9CF1C;
+  --bs-btn-active-color: #000;
+  --bs-btn-active-bg: #D9CF1C;
+  --bs-btn-active-border-color: #CCC21A;
+  --bs-btn-focus-shadow-rgb: 252, 241, 39;
+  --bs-btn-disabled-color: #000;
+  --bs-btn-disabled-bg: #FCF127;
+  --bs-btn-disabled-border-color: #FCF127;
+}
+[data-bs-theme="light"] .btn-outline-primary {
+  --bs-btn-color: #000000;
+  --bs-btn-border-color: #FCF127;
+  --bs-btn-hover-bg: #E6DB1F;
+  --bs-btn-hover-border-color: #D9CF1C;
+  --bs-btn-active-bg: #D9CF1C;
+  --bs-btn-active-border-color: #CCC21A;
+  --bs-btn-focus-shadow-rgb: 252, 241, 39;
+  --bs-btn-disabled-border-color: #FCF127;
+}
+.form-check-input:not(:checked) {
+  background-color: #FFF9C4;
+  box-shadow: none !important;
+}
+
 /* ---------- Sidebar ---------- */
 /* Always navy, in both themes. data-bs-theme="dark" on the <aside> makes
    everything inside use the dark colors even when the page is in light mode. */
@@ -127,6 +190,7 @@
   align-items: center;
   justify-content: center;
   padding: 1rem;
+  background: linear-gradient(to bottom, #0D3B96 0%, #041330 100%);
 }
 
 .auth-card {
