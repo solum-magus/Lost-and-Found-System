@@ -2,8 +2,8 @@
 {% block title %}Dashboard &middot; PLV Lost and Found{% endblock %}
 
 {% block content %}
-<h2>Dashboard</h2>
-<p style="font-size: 1.5rem;">Welcome, {{ full_name }}!</p>
+<h2>Welcome, {{ full_name.split()[0] }}!</h2>
+<p style="font-size: 1.5rem;">Have you lost or found something today?</p>
 
 <div class="dash-cards">
     <div class="dash-card">
@@ -21,7 +21,7 @@
 </div>
 
 <div class="dash-section">
-    <h3>My Reported Items</h3>
+    <h3>My Recent Reports</h3>
     {% if my_items %}
     <table>
         <tr>
@@ -49,7 +49,7 @@
 </div>
 
 <div class="dash-section">
-    <h3>My Claims</h3>
+    <h3>My Recent Claims</h3>
     {% if my_claims %}
     <table>
         <tr>

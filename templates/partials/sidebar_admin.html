@@ -1,23 +1,28 @@
 {% set ep = request.endpoint or '' %}
-<ul class="nav nav-pills flex-column gap-1 mb-auto">
+<div class="sidebar-label">General</div>
+<ul class="nav flex-column gap-1">
   <li class="nav-item">
     <a class="nav-link {{ 'active' if ep == 'admin.dashboard' }}" href="{{ url_for('admin.dashboard') }}">
-      <i class="bi bi-speedometer2 me-2"></i>Dashboard</a>
+      <i class="bi bi-speedometer2 me-3"></i>Dashboard</a>
   </li>
   <li class="nav-item">
+    <a class="nav-link {{ 'active' if ep == 'shared.reports' }}" href="{{ url_for('shared.reports') }}">
+      <i class="bi bi-file-earmark-text me-3"></i>Reports</a>
+  </li>
+</ul>
+
+<div class="sidebar-label">Management</div>
+<ul class="nav flex-column gap-1">
+  <li class="nav-item">
     <a class="nav-link {{ 'active' if ep == 'admin.claims' }}" href="{{ url_for('admin.claims') }}">
-      <i class="bi bi-clipboard-check me-2"></i>Claims</a>
+      <i class="bi bi-clipboard-check me-3"></i>Claims</a>
   </li>
   <li class="nav-item">
     <a class="nav-link {{ 'active' if ep == 'admin.users' }}" href="{{ url_for('admin.users') }}">
-      <i class="bi bi-people me-2"></i>Users</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link {{ 'active' if ep == 'shared.history' }}" href="{{ url_for('shared.history') }}">
-      <i class="bi bi-clock-history me-2"></i>History</a>
+      <i class="bi bi-people me-3"></i>Users</a>
   </li>
   <li class="nav-item">
     <a class="nav-link {{ 'active' if ep == 'shared.settings' }}" href="{{ url_for('shared.settings') }}">
-      <i class="bi bi-gear me-2"></i>Settings</a>
+      <i class="bi bi-gear me-3"></i>Settings</a>
   </li>
 </ul>

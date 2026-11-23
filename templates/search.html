@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Search &middot; PLV Lost and Found{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Search</h2>
+
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <h5 class="mb-0">{% if q %}Results for "{{ q }}"{% else %}Search items{% endif %}</h5>
+    {% if q %}<span class="text-body-secondary small">{{ results|length }} found</span>{% endif %}
+  </div>
+
+  {% if results %}
+  <ul class="list-group list-group-flush">
+    {% for item in results %}
+    <li class="list-group-item d-flex justify-content-between align-items-start gap-3">
+      <div>
+        <div class="fw-semibold">
+          {{ item["name"] }}
+          <span class="dash-badge ms-1 {{ item['item_status'] }}">{{ item["item_status"] }}</span>
+        </div>
+        <div class="small text-body-secondary">
+          {{ item["category"] }} &middot; {{ item["location"] }} &middot; {{ item["date_reported"] }}
+        </div>
+        {% if item["description"] %}<div class="small mt-1">{{ item["description"] }}</div>{% endif %}
+      </div>
+      {# Only Found items can be claimed, and not by their own reporter or by an admin #}
+      {% if item["item_status"] == "Found" and item["user_id"] != session.user_id and session.role != "Admin" %}
+      <a class="btn btn-sm btn-primary" href="{{ url_for('user.claims', item_id=item['item_id']) }}">Claim</a>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <div class="card-body">
+    <p class="dash-empty mb-0">
+      {% if q %}No active items match "{{ q }}".{% else %}Type a word in the search box at the top, such as "wallet" or "library".{% endif %}
+    </p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -22,6 +22,15 @@ def by_user(user_id):
         "SELECT * FROM items WHERE user_id = ? ORDER BY item_id DESC", (user_id,)
     ).fetchall()
 
+def search(text):
+    """Active items whose name, category, location or description contains the text."""
+    like = f"%{text}%"
+    return get_db().execute(
+        "SELECT * FROM items WHERE status = 'Active' AND "
+        "(name LIKE ? OR category LIKE ? OR location LIKE ? OR description LIKE ?) "
+        "ORDER BY item_id DESC",
+        (like, like, like, like),
+    ).fetchall()
 
 def active_of_type(item_status, exclude_user_id):
     """Active items of one type ('Lost' or 'Found') reported by OTHER people."""

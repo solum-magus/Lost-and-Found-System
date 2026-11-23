@@ -1,6 +1,5 @@
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash
-
 from models import item_model, user_model
 from routes.auth_routes import (EMAIL_RE, NAME_MAX, NAME_MIN, PASSWORD_MAX,
                                 PASSWORD_MIN, valid_name)
@@ -8,13 +7,31 @@ from routes.utils import login_required
 
 bp = Blueprint("shared", __name__)
 
-
-@bp.route("/history")
+@bp.route("/search")
 @login_required
-def history():
-    type_filter = request.args.get("type", "")          
-    return render_template("history.html", reports=item_model.all_reports(type_filter),
-                           type_filter=type_filter)
+def search():
+    q = " ".join(request.args.get("q", "").split())
+    results = item_model.search(q) if q else []
+    return render_template("search.html", q=q, results=results)
+
+@bp.route("/reports")
+@login_required
+def reports():
+    q = " ".join(request.args.get("q", "").split())      # text typed in the top bar search
+    kind = request.args.get("type", "")                  # "Lost", "Found", or anything else = all
+    results = item_model.search(q)                       # empty q = everything
+
+    # Counts for the tabs always come from the full result, before the Lost/Found filter
+    counts = {"All": len(results),
+              "Lost": sum(1 for r in results if r["item_status"] == "Lost"),
+              "Found": sum(1 for r in results if r["item_status"] == "Found")}
+
+    if kind in ("Lost", "Found"):
+        results = [r for r in results if r["item_status"] == kind]
+    else:
+        kind = "All"
+
+    return render_template("reports.html", q=q, kind=kind, counts=counts, results=results)
 
 
 @bp.route("/settings")

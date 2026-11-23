@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Reports &middot; PLV Lost and Found{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Reports</h2>
+
+{# Heading and Lost / Found filter sit above the box. The search text is kept when you switch. #}
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+  <h5 class="mb-0">{% if q %}Results for "{{ q }}"{% else %}All active reports{% endif %}</h5>
+
+  <div class="btn-group" role="group">
+    <a class="btn btn-outline-primary {{ 'active' if kind == 'All' }}" href="{{ url_for('shared.reports', q=q) }}">All</a>
+    <a class="btn btn-outline-primary {{ 'active' if kind == 'Lost' }}" href="{{ url_for('shared.reports', q=q, type='Lost') }}">Lost</a>
+    <a class="btn btn-outline-primary {{ 'active' if kind == 'Found' }}" href="{{ url_for('shared.reports', q=q, type='Found') }}">Found</a>
+  </div>
+</div>
+
+{# The box holds only the table #}
+<div class="dash-section">
+  {% if results %}
+  <table>
+    <tr>
+      <th>ID</th><th>Name</th><th>Type</th><th>Category</th><th>Location</th><th>Date</th><th>Description</th>
+      {% if session.role != "Admin" %}<th>Actions</th>{% endif %}
+    </tr>
+    {% for item in results %}
+    <tr>
+      <td>{{ item["item_id"] }}</td>
+      <td>{{ item["name"] }}</td>
+      <td><span class="dash-badge {{ item['item_status'] }}">{{ item["item_status"] }}</span></td>
+      <td>{{ item["category"] }}</td>
+      <td>{{ item["location"] }}</td>
+      <td>{{ item["date_reported"] }}</td>
+      <td>{{ item["description"] }}</td>
+      {% if session.role != "Admin" %}
+      <td class="text-nowrap">
+        {# Only Found items reported by someone else can be claimed #}
+        {% if item["user_id"] == session.user_id %}<span class="text-body-secondary small">Your report</span>
+        {% elif item["item_status"] == "Found" %}
+        <a class="btn btn-sm btn-primary" href="{{ url_for('user.claims', item_id=item['item_id']) }}">Claim</a>
+        {% endif %}
+      </td>
+      {% endif %}
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <p class="dash-empty mb-0">
+    {% if q %}No {{ kind|lower if kind != "All" else "active" }} reports match "{{ q }}".
+    {% else %}No {{ kind|lower if kind != "All" else "active" }} reports yet.{% endif %}
+  </p>
+  {% endif %}
+</div>
+{% endblock %}

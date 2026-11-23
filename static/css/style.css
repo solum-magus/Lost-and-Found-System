@@ -2,7 +2,7 @@
   min-height: 100vh;
 }
 
-.app-shell > main {
+.app-shell > .main-col {
   min-width: 0; /* lets wide tables scroll instead of stretching the page */
 }
 
@@ -12,11 +12,13 @@
 }
 
 /* ---------- Sidebar ---------- */
+/* Always navy, in both themes. data-bs-theme="dark" on the <aside> makes
+   everything inside use the dark colors even when the page is in light mode. */
 .sidebar {
   width: 250px;
   min-width: 250px;
-  background: var(--bs-tertiary-bg);
-  border-right: 1px solid var(--bs-border-color);
+  background: #031033;
+  color: #fff;
 
   position: sticky;      /* stays in place while the page scrolls */
   top: 0;
@@ -25,12 +27,97 @@
   overflow-y: auto;      /* only scrolls inside itself if the window is very short */
 }
 
+/* Top part: centered logo, name and school, with a line underneath */
+.sidebar-brand {
+  padding: 2rem 1rem 1.25rem;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.sidebar-title {
+  margin-top: 0.9rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.sidebar-subtitle {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.sidebar-nav {
+  padding: 0.5rem 1.25rem 1.5rem;
+}
+
+/* Small spaced-out group headings: GENERAL, MANAGEMENT */
+.sidebar-label {
+  margin: 1.5rem 0 0.5rem 0.5rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* White bold links with an icon; the current page gets a soft highlight */
 .sidebar .nav-link {
-  color: var(--bs-body-color);
+  display: flex;
+  align-items: center;
+  padding: 0.6rem 0.5rem;
+  border-radius: 0.5rem;
+  color: #fff;
+  font-weight: 600;
 }
 
 .sidebar .nav-link:hover:not(.active) {
-  background: var(--bs-secondary-bg);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.sidebar .nav-link.active {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+/* ---------- Top bar ---------- */
+/* Stays at the top of the content area while the page scrolls */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+  padding: 0.75rem 1.5rem;
+  background: var(--bs-body-bg);
+  border-bottom: 1px solid var(--bs-border-color);
+}
+
+/* Search box with the magnifier icon drawn inside it */
+.topbar-search {
+  position: relative;
+  flex: 1;
+  max-width: 420px;
+}
+
+.topbar-search .bi {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--bs-secondary-color);
+  pointer-events: none;
+}
+
+.topbar-search input {
+  padding-left: 2.25rem;
+}
+
+/* The name / role button that opens the account menu */
+.user-menu-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--bs-body-color);
+  text-align: left;
+  line-height: 1.2;
 }
 
 /* ---------- Login/Signup ---------- */
@@ -56,8 +143,6 @@
   .sidebar {
     width: 100%;
     min-width: 0;
-    border-right: 0;
-    border-bottom: 1px solid var(--bs-border-color);
     position: static;
     height: auto;
   }

@@ -21,8 +21,15 @@
   <h5>Matches</h5>
   {% if matches %}
   <table>
-        <tr><th>Item</th><th>Location</th><th>Date</th><th>In common (A &cap; B)</th><th>Only in yours (A &minus; B)</th><th>Only in theirs (B &minus; A)</th><th>Similarity</th></tr>
-        {% for other, score, shared, only_mine, only_theirs in matches %}
+    <tr>
+      <th>Item</th><th>Location</th><th>Date</th>
+      <th>In common (A &cap; B)</th><th>Only in yours (A &minus; B)</th><th>Only in theirs (B &minus; A)</th>
+      <th>Similarity</th>
+      {# Only Found items can be claimed, so the Actions column only exists for them #}
+      {% if opposite == "Found" %}<th>Actions</th>{% endif %}
+    </tr>
+    {% for other, score, shared, only_mine, only_theirs in matches %}
+    {% set union_size = shared|length + only_mine|length + only_theirs|length %}
     <tr>
       <td>{{ other["name"] }}</td>
       <td>{{ other["location"] }}</td>
@@ -30,7 +37,18 @@
       <td>{% for w in shared %}<span class="dash-badge me-1">{{ w }}</span>{% endfor %}</td>
       <td>{% for w in only_mine %}<span class="dash-badge me-1">{{ w }}</span>{% endfor %}</td>
       <td>{% for w in only_theirs %}<span class="dash-badge me-1">{{ w }}</span>{% endfor %}</td>
-      <td><strong>{{ (score * 100)|round|int }}%</strong></td>
+      <td class="text-nowrap">
+        <strong>{{ (score * 100)|round|int }}%</strong>
+        <span class="small text-body-secondary">({{ shared|length }} / {{ union_size }})</span><br>
+        {% if score >= 0.5 %}<span class="dash-badge Approved">Strong match</span>
+        {% elif score >= 0.25 %}<span class="dash-badge Pending">Likely match</span>
+        {% else %}<span class="dash-badge">Possible match</span>{% endif %}
+      </td>
+      {% if opposite == "Found" %}
+      <td>
+        <a class="btn btn-sm btn-primary" href="{{ url_for('user.claims', item_id=other['item_id']) }}">Claim</a>
+      </td>
+      {% endif %}
     </tr>
     {% endfor %}
   </table>
@@ -43,9 +61,10 @@
   <h5>How the similarity is computed</h5>
   <p class="mb-1">Each item becomes a set of words. For your set <code>A</code> and another item's set <code>B</code>:</p>
   <p class="mb-1"><code>similarity = |A &cap; B| / |A &cup; B|</code> (the Jaccard index)</p>
+  <!--<p class="mb-1">The fraction next to the percentage is that division: words in common / all different words used by either item.</p>
+  <p class="mb-1">Words only one item has: <code>A &minus; B</code> (only in yours) and <code>B &minus; A</code> (only in theirs).</p>-->
   <p class="mb-0 text-body-secondary">Only items of the opposite type and the same category are compared.</p>
 </div>
 
-<a class="btn btn-outline-secondary" href="{{ url_for('user.item_matches', item_id=item['item_id']) }}" hidden></a>
 <a class="btn btn-outline-secondary" href="{{ url_for('user.items') }}">Back to Items</a>
 {% endblock %}
