@@ -1,6 +1,6 @@
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash
-from models import item_model, user_model
+from models import claim_model, item_model, user_model
 from routes.auth_routes import (EMAIL_RE, NAME_MAX, NAME_MIN, PASSWORD_MAX,
                                 PASSWORD_MIN, valid_name)
 from routes.utils import login_required
@@ -18,7 +18,20 @@ def search():
 @login_required
 def reports():
     q = " ".join(request.args.get("q", "").split())      # text typed in the top bar search
-    kind = request.args.get("type", "")                  # "Lost", "Found", or anything else = all
+    kind = request.args.get("type", "")                  # "Lost", "Found", "Mine", or anything else = all
+
+    if kind == "Mine" and session["role"] != "Admin":
+        # Everything this user reported (any status) and every claim they made
+        def has_q(*fields):
+            return q.lower() in " ".join(f or "" for f in fields).lower()
+
+        my_reports = [i for i in item_model.by_user(session["user_id"])
+                      if has_q(i["name"], i["category"], i["location"], i["description"])]
+        my_claims = [c for c in claim_model.by_user(session["user_id"])
+                     if has_q(c["item_name"], c["proof_description"])]
+        return render_template("reports.html", q=q, kind="Mine",
+                               my_reports=my_reports, my_claims=my_claims)
+
     results = item_model.search(q)                       # empty q = everything
 
     # Counts for the tabs always come from the full result, before the Lost/Found filter
