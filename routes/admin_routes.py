@@ -93,9 +93,31 @@ def users():
         "FROM users ORDER BY users.full_name"
     ).fetchall()
 
+    # Every report and every claim, once. They are grouped per user below.
+    all_items = db.execute(
+        "SELECT item_id, user_id, name, category, location, description, "
+        "item_status, status, date_reported FROM items ORDER BY item_id DESC"
+    ).fetchall()
+    all_claims = db.execute(
+        "SELECT claims.claim_id, claims.user_id, claims.item_id, claims.proof_description, "
+        "claims.claim_date, claims.claim_status, items.name AS item_name "
+        "FROM claims JOIN items ON claims.item_id = items.item_id "
+        "ORDER BY claims.claim_id DESC"
+    ).fetchall()
+
+    # {user_id: [their reports]} and {user_id: [their claims]}
+    items_by_user = {}
+    for item in all_items:
+        items_by_user.setdefault(item["user_id"], []).append(item)
+    claims_by_user = {}
+    for claim in all_claims:
+        claims_by_user.setdefault(claim["user_id"], []).append(claim)
+
     return render_template(
         "admin/users.html",
         all_users=all_users,
+        items_by_user=items_by_user,
+        claims_by_user=claims_by_user,
         my_id=session["user_id"],
     )
 
@@ -148,96 +170,22 @@ def delete_user(user_id):
     return redirect(url_for("admin.users"))
 
 
-# ---------------------------------------------------------------
-# CLAIMS MANAGEMENT
-# ---------------------------------------------------------------
 @bp.route("/claims")
 @admin_required
 def claims():
     db = get_db()
     all_claims = db.execute(
-        "SELECT claims.claim_id, claims.proof_description, claims.claim_date, "
-        "claims.claim_status, items.name AS item_name, items.status AS item_state, "
-        "users.full_name AS claimant, users.email AS claimant_email "
+        "SELECT claims.claim_id, claims.item_id, claims.user_id AS claimant_id, "
+        "claims.proof_description, claims.claim_date, claims.claim_status, "
+        "claimant.full_name AS claimant, claimant.email AS claimant_email, "
+        "items.name AS item_name, items.category, items.location, items.description, "
+        "items.item_status, items.status AS item_state, items.date_reported, "
+        "finder.full_name AS finder, finder.email AS finder_email "
         "FROM claims "
         "JOIN items ON claims.item_id = items.item_id "
-        "JOIN users ON claims.user_id = users.id "
+        "JOIN users AS claimant ON claims.user_id = claimant.id "
+        "JOIN users AS finder ON items.user_id = finder.id "
         "ORDER BY (claims.claim_status = 'Pending') DESC, "
         "claims.claim_date DESC, claims.claim_id DESC"
     ).fetchall()
-
     return render_template("admin/claims.html", all_claims=all_claims)
-
-
-@bp.route("/claims/<int:claim_id>/approve", methods=["POST"])
-@admin_required
-def approve_claim(claim_id):
-    db = get_db()
-    claim = db.execute(
-        "SELECT claim_id, item_id, claim_status FROM claims WHERE claim_id = ?",
-        (claim_id,),
-    ).fetchone()
-
-    if claim is None:
-        flash("Claim not found.", "warning")
-        return redirect(url_for("admin.claims"))
-
-    if claim["claim_status"] != "Pending":
-        flash("Only pending claims can be approved.", "warning")
-        return redirect(url_for("admin.claims"))
-
-    item = db.execute(
-        "SELECT status FROM items WHERE item_id = ?", (claim["item_id"],)
-    ).fetchone()
-
-    if item is None or item["status"] != "Active":
-        flash("This item is no longer active, so the claim can't be approved.", "warning")
-        return redirect(url_for("admin.claims"))
-
-    # 1. Approve this claim
-    db.execute(
-        "UPDATE claims SET claim_status = 'Approved' WHERE claim_id = ?",
-        (claim_id,),
-    )
-    # 2. Mark the item as claimed
-    db.execute(
-        "UPDATE items SET status = 'Claimed' WHERE item_id = ?",
-        (claim["item_id"],),
-    )
-    # 3. Reject the other pending claims on the same item
-    db.execute(
-        "UPDATE claims SET claim_status = 'Rejected' "
-        "WHERE item_id = ? AND claim_id != ? AND claim_status = 'Pending'",
-        (claim["item_id"], claim_id),
-    )
-    db.commit()
-
-    flash("Claim approved. Other pending claims on this item were rejected.", "success")
-    return redirect(url_for("admin.claims"))
-
-
-@bp.route("/claims/<int:claim_id>/reject", methods=["POST"])
-@admin_required
-def reject_claim(claim_id):
-    db = get_db()
-    claim = db.execute(
-        "SELECT claim_id, claim_status FROM claims WHERE claim_id = ?",
-        (claim_id,),
-    ).fetchone()
-
-    if claim is None:
-        flash("Claim not found.", "warning")
-        return redirect(url_for("admin.claims"))
-
-    if claim["claim_status"] != "Pending":
-        flash("Only pending claims can be rejected.", "warning")
-        return redirect(url_for("admin.claims"))
-
-    db.execute(
-        "UPDATE claims SET claim_status = 'Rejected' WHERE claim_id = ?",
-        (claim_id,),
-    )
-    db.commit()
-
-    flash("Claim rejected.", "success")
-    return redirect(url_for("admin.claims"))

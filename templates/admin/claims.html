@@ -2,46 +2,114 @@
 {% block title %}Claims &middot; PLV Lost and Found{% endblock %}
 
 {% block content %}
-<h2>Claims Management</h2>
-<p class="dash-empty">Pending claims are listed first. Approving a claim marks the item as Claimed and rejects the other pending claims on it.</p>
+<h2 class="mb-1">Claims Management</h2>
+<p class="text-body-secondary mb-4">
+    Pending claims are listed first. Approving a claim marks the item as Claimed and rejects the other pending claims on it.
+</p>
 
 <div class="dash-section">
     {% if all_claims %}
     <table>
         <tr>
-            <th>Item</th>
-            <th>Claimed by</th>
+            <th>Email</th>
+            <th>Claimant Name</th>
+            <th>Item ID</th>
+            <th>Date Claimed</th>
             <th>Proof</th>
-            <th>Date</th>
             <th>Status</th>
-            <th>Actions</th>
+            <th>Action</th>
         </tr>
         {% for claim in all_claims %}
         <tr>
-            <td>{{ claim["item_name"] }}</td>
-            <td>{{ claim["claimant"] }}<br><small class="dash-empty">{{ claim["claimant_email"] }}</small></td>
-            <td style="white-space: pre-wrap;">{{ claim["proof_description"] }}</td>
+            <td>{{ claim["claimant_email"] }}</td>
+            <td>{{ claim["claimant"] }}</td>
+            <td>{{ claim["item_id"] }}</td>
             <td>{{ claim["claim_date"] }}</td>
+            <td>{{ claim["proof_description"]|truncate(40) }}</td>
             <td><span class="dash-badge {{ claim['claim_status'] }}">{{ claim["claim_status"] }}</span></td>
             <td>
-                {% if claim["claim_status"] == "Pending" %}
-                <form method="post" action="{{ url_for('admin.approve_claim', claim_id=claim['claim_id']) }}"
-                      class="d-inline">
-                    <button type="submit" class="btn btn-sm btn-success">Approve</button>
-                </form>
-                <form method="post" action="{{ url_for('admin.reject_claim', claim_id=claim['claim_id']) }}"
-                      class="d-inline">
-                    <button type="submit" class="btn btn-sm btn-outline-danger">Reject</button>
-                </form>
-                {% else %}
-                <span class="dash-empty">Done</span>
-                {% endif %}
+                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse"
+                        data-bs-target="#details-{{ claim['claim_id'] }}" aria-expanded="false">See details</button>
+            </td>
+        </tr>
+
+        {# The details row is hidden until "See details" is clicked #}
+        <tr class="collapse claim-details" id="details-{{ claim['claim_id'] }}">
+            <td colspan="7">
+                <div class="claim-detail-box">
+                    <div class="row g-4">
+
+                        <div class="col-md-4">
+                            <h6>Claim</h6>
+                            <dl class="detail-list">
+                                <dt>Claim ID</dt><dd>{{ claim["claim_id"] }}</dd>
+                                <dt>Status</dt><dd><span class="dash-badge {{ claim['claim_status'] }}">{{ claim["claim_status"] }}</span></dd>
+                                <dt>Date claimed</dt><dd>{{ claim["claim_date"] }}</dd>
+                                <dt>Proof of ownership</dt><dd style="white-space: pre-wrap;">{{ claim["proof_description"] }}</dd>
+                            </dl>
+                        </div>
+
+                        <div class="col-md-4">
+                            <h6>Claimant</h6>
+                            <dl class="detail-list">
+                                <dt>Name</dt><dd>{{ claim["claimant"] }}</dd>
+                                <dt>Email</dt><dd>{{ claim["claimant_email"] }}</dd>
+                                <dt>User ID</dt><dd>{{ claim["claimant_id"] }}</dd>
+                            </dl>
+                        </div>
+
+                        <div class="col-md-4">
+                            <h6>Item being claimed</h6>
+                            <dl class="detail-list">
+                                <dt>Item ID</dt><dd>{{ claim["item_id"] }}</dd>
+                                <dt>Name</dt><dd>{{ claim["item_name"] }}</dd>
+                                <dt>Category</dt><dd>{{ claim["category"] }}</dd>
+                                <dt>Location</dt><dd>{{ claim["location"] }}</dd>
+                                {% if claim["description"] %}<dt>Description</dt><dd style="white-space: pre-wrap;">{{ claim["description"] }}</dd>{% endif %}
+                                <dt>Type</dt><dd><span class="dash-badge {{ claim['item_status'] }}">{{ claim["item_status"] }}</span></dd>
+                                <dt>Item status</dt><dd>{{ claim["item_state"] }}</dd>
+                                <dt>Date reported</dt><dd>{{ claim["date_reported"] }}</dd>
+                                <dt>Reported by</dt><dd>{{ claim["finder"] }} ({{ claim["finder_email"] }})</dd>
+                            </dl>
+                        </div>
+
+                    </div>
+
+                    <hr>
+
+                    {# Only a Pending claim can still be decided #}
+                    {% if claim["claim_status"] == "Pending" %}
+                    <div class="d-flex flex-wrap align-items-center gap-2">
+                        {% if claim["item_state"] == "Active" %}
+                        <form method="post" action="{{ url_for('admin.approve_claim', claim_id=claim['claim_id']) }}">
+                            <button type="submit" class="btn btn-primary">Approve</button>
+                        </form>
+                        {% else %}
+                        <span class="text-body-secondary small">This item is no longer active, so this claim can only be rejected.</span>
+                        {% endif %}
+                        <form method="post" action="{{ url_for('admin.reject_claim', claim_id=claim['claim_id']) }}">
+                            <button type="submit" class="btn btn-outline-danger">Reject</button>
+                        </form>
+                    </div>
+                    {% else %}
+                    <p class="text-body-secondary mb-0">This claim was already {{ claim["claim_status"]|lower }}.</p>
+                    {% endif %}
+                </div>
             </td>
         </tr>
         {% endfor %}
     </table>
     {% else %}
-    <p class="dash-empty">No claims have been made yet.</p>
+    <p class="dash-empty mb-0">No claims have been made yet.</p>
     {% endif %}
 </div>
+
+<script>
+    // Switch the button text between "See details" and "Hide details"
+    document.querySelectorAll(".claim-details").forEach(function (row) {
+        var button = document.querySelector('[data-bs-target="#' + row.id + '"]');
+        row.addEventListener("show.bs.collapse", function () { button.textContent = "Hide details"; });
+        row.addEventListener("hide.bs.collapse", function () { button.textContent = "See details"; });
+    });
+</script>
 {% endblock %}

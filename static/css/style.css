@@ -302,3 +302,34 @@
 [data-bs-theme="dark"] .chart-dot-lost {
   background: #4C7DDB;
 }
+
+/* Admin Claims */
+.claim-detail-box {
+  padding: 1rem;
+  border-radius: 8px;
+  background: var(--bs-body-bg);
+  border: 1px solid var(--bs-border-color);
+}
+
+/* Label above value, one pair after another */
+.detail-list {
+  margin: 0;
+}
+
+.detail-list dt {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--bs-secondary-color);
+}
+
+.detail-list dd {
+  margin-bottom: 0.6rem;
+}
+
+/* The details row has no line of its own; the panel inside it has a border */
+.dash-section tr.claim-details td {
+  border-bottom: 0;
+  padding: 0.5rem 0 1rem;
+}

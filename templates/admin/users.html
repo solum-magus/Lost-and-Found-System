@@ -2,8 +2,10 @@
 {% block title %}Users &middot; PLV Lost and Found{% endblock %}
 
 {% block content %}
-<h2>User Management</h2>
-<p class="dash-empty">Change a user's role or delete users who have no items or claims.</p>
+<h2 class="mb-1">User Management</h2>
+<p class="text-body-secondary mb-4">
+    Click "See details" to view a user's reports and claims, change their role, or delete them (only possible when they have no reports or claims).
+</p>
 
 <div class="dash-section">
     {% if all_users %}
@@ -12,11 +14,13 @@
             <th>Name</th>
             <th>Email</th>
             <th>Role</th>
-            <th>Items</th>
+            <th>Reports</th>
             <th>Claims</th>
-            <th>Actions</th>
+            <th>Action</th>
         </tr>
         {% for user in all_users %}
+        {% set my_items = items_by_user.get(user["id"], []) %}
+        {% set my_claims = claims_by_user.get(user["id"], []) %}
         <tr>
             <td>{{ user["full_name"] }}{% if user["id"] == my_id %} (you){% endif %}</td>
             <td>{{ user["email"] }}</td>
@@ -24,27 +28,104 @@
             <td>{{ user["item_count"] }}</td>
             <td>{{ user["claim_count"] }}</td>
             <td>
-                {% if user["id"] == my_id %}
-                    <span class="dash-empty">Your account</span>
-                {% else %}
-                <form method="post" action="{{ url_for('admin.update_role', user_id=user['id']) }}"
-                      class="d-inline-flex gap-1">
-                    <select name="role" class="form-select form-select-sm">
-                        <option value="Student" {% if user["role"] == "Student" %}selected{% endif %}>Student</option>
-                        <option value="Faculty" {% if user["role"] == "Faculty" %}selected{% endif %}>Faculty</option>
-                        <option value="Admin" {% if user["role"] == "Admin" %}selected{% endif %}>Admin</option>
-                    </select>
-                    <button type="submit" class="btn btn-sm btn-primary">Save</button>
-                </form>
+                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse"
+                        data-bs-target="#user-{{ user['id'] }}" aria-expanded="false">See details</button>
+            </td>
+        </tr>
 
-                {% if user["item_count"] == 0 and user["claim_count"] == 0 %}
-                <form method="post" action="{{ url_for('admin.delete_user', user_id=user['id']) }}"
-                      class="d-inline"
-                      onsubmit="return confirm('Delete this user? This cannot be undone.');">
-                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
-                </form>
-                {% endif %}
-                {% endif %}
+        {# The details row is hidden until "See details" is clicked #}
+        <tr class="collapse claim-details" id="user-{{ user['id'] }}">
+            <td colspan="6">
+                <div class="claim-detail-box">
+
+                    {# ---------- User info ---------- #}
+                    <h6>User</h6>
+                    <div class="row gx-3">
+                        <dl class="detail-list col-sm-3"><dt>User ID</dt><dd>{{ user["id"] }}</dd></dl>
+                        <dl class="detail-list col-sm-3"><dt>Full name</dt><dd>{{ user["full_name"] }}</dd></dl>
+                        <dl class="detail-list col-sm-3"><dt>Email</dt><dd>{{ user["email"] }}</dd></dl>
+                        <dl class="detail-list col-sm-3"><dt>Role</dt><dd>{{ user["role"] }}</dd></dl>
+                    </div>
+
+                    {# ---------- Role / delete ---------- #}
+                    {% if user["id"] == my_id %}
+                    <p class="text-body-secondary small">This is your account, so you can't change its role or delete it.</p>
+                    {% else %}
+                    <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+                        <form method="post" action="{{ url_for('admin.update_role', user_id=user['id']) }}"
+                              class="d-inline-flex gap-1">
+                            <select name="role" class="form-select form-select-sm">
+                                <option value="Student" {% if user["role"] == "Student" %}selected{% endif %}>Student</option>
+                                <option value="Faculty" {% if user["role"] == "Faculty" %}selected{% endif %}>Faculty</option>
+                                <option value="Admin" {% if user["role"] == "Admin" %}selected{% endif %}>Admin</option>
+                            </select>
+                            <button type="submit" class="btn btn-sm btn-primary text-nowrap">Save role</button>
+                        </form>
+
+                        {% if user["item_count"] == 0 and user["claim_count"] == 0 %}
+                        <form method="post" action="{{ url_for('admin.delete_user', user_id=user['id']) }}"
+                              onsubmit="return confirm('Delete this user? This cannot be undone.');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger text-nowrap">Delete user</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    <hr>
+
+                    {# ---------- Their reports ---------- #}
+                    <h6>Reports ({{ my_items|length }})</h6>
+                    {% if my_items %}
+                    <div class="table-responsive mb-3">
+                        <table class="table table-sm align-middle mb-0">
+                            <tr>
+                                <th>ID</th><th>Name</th><th>Type</th><th>Category</th>
+                                <th>Location</th><th>Description</th><th>Date</th><th>Status</th>
+                            </tr>
+                            {% for item in my_items %}
+                            <tr>
+                                <td>{{ item["item_id"] }}</td>
+                                <td>{{ item["name"] }}</td>
+                                <td><span class="dash-badge {{ item['item_status'] }}">{{ item["item_status"] }}</span></td>
+                                <td>{{ item["category"] }}</td>
+                                <td>{{ item["location"] }}</td>
+                                <td>{{ item["description"] or "-" }}</td>
+                                <td class="text-nowrap">{{ item["date_reported"] }}</td>
+                                <td>{{ item["status"] }}</td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-body-secondary small mb-3">This user has not reported any items.</p>
+                    {% endif %}
+
+                    {# ---------- Their claims ---------- #}
+                    <h6>Claims ({{ my_claims|length }})</h6>
+                    {% if my_claims %}
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle mb-0">
+                            <tr>
+                                <th>Claim ID</th><th>Item ID</th><th>Item</th>
+                                <th>Proof</th><th>Date</th><th>Status</th>
+                            </tr>
+                            {% for claim in my_claims %}
+                            <tr>
+                                <td>{{ claim["claim_id"] }}</td>
+                                <td>{{ claim["item_id"] }}</td>
+                                <td>{{ claim["item_name"] }}</td>
+                                <td style="white-space: pre-wrap;">{{ claim["proof_description"] }}</td>
+                                <td class="text-nowrap">{{ claim["claim_date"] }}</td>
+                                <td><span class="dash-badge {{ claim['claim_status'] }}">{{ claim["claim_status"] }}</span></td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-body-secondary small mb-0">This user has not made any claims.</p>
+                    {% endif %}
+
+                </div>
             </td>
         </tr>
         {% endfor %}
@@ -53,4 +134,13 @@
     <p class="dash-empty">No users found.</p>
     {% endif %}
 </div>
+
+<script>
+    // Switch the button text between "See details" and "Hide details"
+    document.querySelectorAll(".claim-details").forEach(function (row) {
+        var button = document.querySelector('[data-bs-target="#' + row.id + '"]');
+        row.addEventListener("show.bs.collapse", function () { button.textContent = "Hide details"; });
+        row.addEventListener("hide.bs.collapse", function () { button.textContent = "See details"; });
+    });
+</script>
 {% endblock %}
