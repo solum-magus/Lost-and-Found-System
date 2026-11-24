@@ -38,6 +38,13 @@
             <div class="form-text">At least 10 characters.</div>
           </div>
 
+          {% if c["admin_note"] %}
+          <div class="small mt-2">
+            <strong>{% if c["claim_status"] == "Approved" %}Where to claim:{% else %}Reason:{% endif %}</strong>
+            {{ c["admin_note"] }}
+          </div>
+          {% endif %}
+
           <button class="btn btn-primary w-100">Submit claim</button>
         </form>
       </div>

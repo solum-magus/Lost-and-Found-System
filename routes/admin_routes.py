@@ -189,3 +189,101 @@ def claims():
         "claims.claim_date DESC, claims.claim_id DESC"
     ).fetchall()
     return render_template("admin/claims.html", all_claims=all_claims)
+
+# ---------------------------------------------------------------
+# CLAIM DECISIONS (approve / reject)
+# ---------------------------------------------------------------
+def get_note():
+    """The admin's message from the form (where to claim, or why rejected).
+    Returns (note, error). Exactly one of them is None."""
+    note = request.form.get("admin_note", "").strip()
+    if len(note) < 3 or len(note) > 300:
+        return None, "Please write a message of 3 to 300 characters."
+    return note, None
+
+
+@bp.route("/claims/<int:claim_id>/approve", methods=["POST"])
+@admin_required
+def approve_claim(claim_id):
+    db = get_db()
+
+    note, error = get_note()
+    if error:
+        flash("To approve, tell the claimant where to get the item. " + error, "warning")
+        return redirect(url_for("admin.claims"))
+
+    claim = db.execute(
+        "SELECT claim_id, item_id, claim_status FROM claims WHERE claim_id = ?",
+        (claim_id,),
+    ).fetchone()
+
+    if claim is None:
+        flash("Claim not found.", "warning")
+        return redirect(url_for("admin.claims"))
+
+    if claim["claim_status"] != "Pending":
+        flash("Only pending claims can be approved.", "warning")
+        return redirect(url_for("admin.claims"))
+
+    item = db.execute(
+        "SELECT status FROM items WHERE item_id = ?", (claim["item_id"],)
+    ).fetchone()
+
+    if item is None or item["status"] != "Active":
+        flash("This item is no longer active, so the claim can't be approved.", "warning")
+        return redirect(url_for("admin.claims"))
+
+    # 1. Approve this claim (and save the pickup message)
+    db.execute(
+        "UPDATE claims SET claim_status = 'Approved', admin_note = ? WHERE claim_id = ?",
+        (note, claim_id),
+    )
+    # 2. Mark the item as claimed
+    db.execute(
+        "UPDATE items SET status = 'Claimed' WHERE item_id = ?",
+        (claim["item_id"],),
+    )
+    # 3. Reject the other pending claims on the same item, with an automatic reason
+    db.execute(
+        "UPDATE claims SET claim_status = 'Rejected', "
+        "admin_note = 'Another claim on this item was approved.' "
+        "WHERE item_id = ? AND claim_id != ? AND claim_status = 'Pending'",
+        (claim["item_id"], claim_id),
+    )
+    db.commit()
+
+    flash("Claim approved. Other pending claims on this item were rejected.", "success")
+    return redirect(url_for("admin.claims"))
+
+
+@bp.route("/claims/<int:claim_id>/reject", methods=["POST"])
+@admin_required
+def reject_claim(claim_id):
+    db = get_db()
+
+    note, error = get_note()
+    if error:
+        flash("To reject, give a reason. " + error, "warning")
+        return redirect(url_for("admin.claims"))
+
+    claim = db.execute(
+        "SELECT claim_id, claim_status FROM claims WHERE claim_id = ?",
+        (claim_id,),
+    ).fetchone()
+
+    if claim is None:
+        flash("Claim not found.", "warning")
+        return redirect(url_for("admin.claims"))
+
+    if claim["claim_status"] != "Pending":
+        flash("Only pending claims can be rejected.", "warning")
+        return redirect(url_for("admin.claims"))
+
+    db.execute(
+        "UPDATE claims SET claim_status = 'Rejected', admin_note = ? WHERE claim_id = ?",
+        (note, claim_id),
+    )
+    db.commit()
+
+    flash("Claim rejected.", "success")
+    return redirect(url_for("admin.claims"))

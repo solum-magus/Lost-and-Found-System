@@ -79,20 +79,36 @@
 
                     {# Only a Pending claim can still be decided #}
                     {% if claim["claim_status"] == "Pending" %}
-                    <div class="d-flex flex-wrap align-items-center gap-2">
-                        {% if claim["item_state"] == "Active" %}
-                        <form method="post" action="{{ url_for('admin.approve_claim', claim_id=claim['claim_id']) }}">
-                            <button type="submit" class="btn btn-primary">Approve</button>
-                        </form>
-                        {% else %}
-                        <span class="text-body-secondary small">This item is no longer active, so this claim can only be rejected.</span>
-                        {% endif %}
-                        <form method="post" action="{{ url_for('admin.reject_claim', claim_id=claim['claim_id']) }}">
-                            <button type="submit" class="btn btn-outline-danger">Reject</button>
-                        </form>
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+                            {% if claim["item_state"] == "Active" %}
+                            <form method="post" action="{{ url_for('admin.approve_claim', claim_id=claim['claim_id']) }}">
+                                <label class="form-label" for="approve-{{ claim['claim_id'] }}">Where / how can the claimant get the item?</label>
+                                <textarea class="form-control mb-2" id="approve-{{ claim['claim_id'] }}" name="admin_note"
+                                          rows="2" minlength="3" maxlength="300" required
+                                          placeholder="e.g. Claim it at the Guard House, bring your school ID."></textarea>
+                                <button type="submit" class="btn btn-primary">Approve</button>
+                            </form>
+                            {% else %}
+                            <span class="text-body-secondary small">This item is no longer active, so this claim can only be rejected.</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6">
+                            <form method="post" action="{{ url_for('admin.reject_claim', claim_id=claim['claim_id']) }}">
+                                <label class="form-label" for="reject-{{ claim['claim_id'] }}">Reason for rejecting</label>
+                                <textarea class="form-control mb-2" id="reject-{{ claim['claim_id'] }}" name="admin_note"
+                                          rows="2" minlength="3" maxlength="300" required
+                                          placeholder="e.g. The proof does not match the item."></textarea>
+                                <button type="submit" class="btn btn-outline-danger">Reject</button>
+                            </form>
+                        </div>
+
                     </div>
                     {% else %}
-                    <p class="text-body-secondary mb-0">This claim was already {{ claim["claim_status"]|lower }}.</p>
+                    <h6>{% if claim["claim_status"] == "Approved" %}Where to claim the item{% else %}Reason for rejection{% endif %}</h6>
+                    <p class="mb-0" style="white-space: pre-wrap;">{{ claim["admin_note"] or "No message was left." }}</p>
                     {% endif %}
                 </div>
             </td>

@@ -107,7 +107,7 @@
                         <table class="table table-sm align-middle mb-0">
                             <tr>
                                 <th>Claim ID</th><th>Item ID</th><th>Item</th>
-                                <th>Proof</th><th>Date</th><th>Status</th>
+                                <th>Proof</th><th>Date</th><th>Status</th><th>Admin Message</th>
                             </tr>
                             {% for claim in my_claims %}
                             <tr>
@@ -117,6 +117,7 @@
                                 <td style="white-space: pre-wrap;">{{ claim["proof_description"] }}</td>
                                 <td class="text-nowrap">{{ claim["claim_date"] }}</td>
                                 <td><span class="dash-badge {{ claim['claim_status'] }}">{{ claim["claim_status"] }}</span></td>
+                                <td style="white-space: pre-wrap;">{{ claim["admin_note"] or "-" }}</td>
                             </tr>
                             {% endfor %}
                         </table>

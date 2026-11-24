@@ -61,6 +61,7 @@ def create_tables():
             claim_date DATE NOT NULL DEFAULT CURRENT_DATE,
             claim_status TEXT NOT NULL DEFAULT 'Pending'
                 CHECK(claim_status IN ('Pending', 'Approved', 'Rejected')),
+            admin_note TEXT,
 
             FOREIGN KEY (item_id) REFERENCES items (item_id),
             FOREIGN KEY (user_id) REFERENCES users (id)

@@ -52,13 +52,14 @@
   <div class="dash-section">
     {% if my_claims %}
     <table>
-      <tr><th>Item</th><th>Date</th><th>Proof</th><th>Status</th></tr>
+      <tr><th>Item</th><th>Date</th><th>Proof</th><th>Status</th><th>Admin message</th></tr>
       {% for c in my_claims %}
       <tr>
         <td>{{ c["item_name"] }}</td>
         <td>{{ c["claim_date"] }}</td>
         <td>{{ c["proof_description"] }}</td>
         <td><span class="dash-badge {{ c['claim_status'] }}">{{ c["claim_status"] }}</span></td>
+        <td>{{ c["admin_note"] or "-" }}</td>
       </tr>
       {% endfor %}
     </table>
