@@ -1,6 +1,7 @@
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 from datetime import date, timedelta
 from database.connection import get_db
+from models import user_model
 from routes.utils import admin_required
 
 bp = Blueprint("admin", __name__, url_prefix="/admin")
@@ -87,7 +88,7 @@ def dashboard():
 def users():
     db = get_db()
     all_users = db.execute(
-        "SELECT users.id, users.full_name, users.email, users.role, "
+        "SELECT users.id, users.full_name, users.email, users.role, users.is_active, "
         "(SELECT COUNT(*) FROM items WHERE items.user_id = users.id) AS item_count, "
         "(SELECT COUNT(*) FROM claims WHERE claims.user_id = users.id) AS claim_count "
         "FROM users ORDER BY users.full_name"
@@ -143,30 +144,25 @@ def update_role(user_id):
     return redirect(url_for("admin.users"))
 
 
-@bp.route("/users/<int:user_id>/delete", methods=["POST"])
+@bp.route("/users/<int:user_id>/status", methods=["POST"])
 @admin_required
-def delete_user(user_id):
+def update_status(user_id):
+    """Deactivate or reactivate an account. Nothing is deleted, so reports and claims stay."""
     if user_id == session["user_id"]:
-        flash("You can't delete your own account.", "warning")
+        flash("You can't deactivate your own account.", "warning")
         return redirect(url_for("admin.users"))
 
-    db = get_db()
-
-    item_count = db.execute(
-        "SELECT COUNT(*) FROM items WHERE user_id = ?", (user_id,)
-    ).fetchone()[0]
-    claim_count = db.execute(
-        "SELECT COUNT(*) FROM claims WHERE user_id = ?", (user_id,)
-    ).fetchone()[0]
-
-    if item_count > 0 or claim_count > 0:
-        flash("This user has items or claims, so they can't be deleted.", "warning")
+    if user_model.get_by_id(user_id) is None:
+        flash("User not found.", "warning")
         return redirect(url_for("admin.users"))
 
-    db.execute("DELETE FROM users WHERE id = ?", (user_id,))
-    db.commit()
+    if request.form.get("action") == "reactivate":
+        user_model.set_active(user_id, True)
+        flash("User reactivated. They can log in again.", "success")
+    else:
+        user_model.set_active(user_id, False)
+        flash("User deactivated. They can no longer log in.", "success")
 
-    flash("User deleted.", "success")
     return redirect(url_for("admin.users"))
 
 

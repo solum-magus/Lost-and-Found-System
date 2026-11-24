@@ -47,3 +47,9 @@ def update_password(user_id, new_password):
     db = get_db()
     db.execute("UPDATE users SET password = ? WHERE id = ?", (generate_password_hash(new_password), user_id))
     db.commit()
+
+def set_active(user_id, active):
+    """active=True re-enables the account, active=False deactivates it (nothing is deleted)."""
+    db = get_db()
+    db.execute("UPDATE users SET is_active = ? WHERE id = ?", (1 if active else 0, user_id))
+    db.commit()

@@ -3,8 +3,8 @@
 
 {% block content %}
 <h2 class="mb-1">User Management</h2>
-<p class="text-body-secondary mb-4">
-    Click "See details" to view a user's reports and claims, change their role, or delete them (only possible when they have no reports or claims).
+<p class="text-body-secondary mb-4">change their role, or deactivate / reactivate their account. Deactivated users can't log in, but their reports and claims are kept.
+    Click "See details" to view a user's reports and claims, 
 </p>
 
 <div class="dash-section">
@@ -16,6 +16,7 @@
             <th>Role</th>
             <th>Reports</th>
             <th>Claims</th>
+            <th>Status</th>
             <th>Action</th>
         </tr>
         {% for user in all_users %}
@@ -27,6 +28,7 @@
             <td><span class="dash-badge">{{ user["role"] }}</span></td>
             <td>{{ user["item_count"] }}</td>
             <td>{{ user["claim_count"] }}</td>
+            <td>{% if user["is_active"] %}<span class="badge text-bg-success">Active</span>{% else %}<span class="badge text-bg-secondary">Deactivated</span>{% endif %}</td>
             <td>
                 <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse"
                         data-bs-target="#user-{{ user['id'] }}" aria-expanded="false">See details</button>
@@ -35,7 +37,7 @@
 
         {# The details row is hidden until "See details" is clicked #}
         <tr class="collapse claim-details" id="user-{{ user['id'] }}">
-            <td colspan="6">
+            <td colspan="7">
                 <div class="claim-detail-box">
 
                     {# ---------- User info ---------- #}
@@ -62,10 +64,16 @@
                             <button type="submit" class="btn btn-sm btn-primary text-nowrap">Save role</button>
                         </form>
 
-                        {% if user["item_count"] == 0 and user["claim_count"] == 0 %}
-                        <form method="post" action="{{ url_for('admin.delete_user', user_id=user['id']) }}"
-                              onsubmit="return confirm('Delete this user? This cannot be undone.');">
-                            <button type="submit" class="btn btn-sm btn-outline-danger text-nowrap">Delete user</button>
+                        {% if user["is_active"] %}
+                        <form method="post" action="{{ url_for('admin.update_status', user_id=user['id']) }}"
+                              onsubmit="return confirm('Deactivate this user? They will not be able to log in until you reactivate them.');">
+                            <input type="hidden" name="action" value="deactivate">
+                            <button type="submit" class="btn btn-sm btn-outline-danger text-nowrap">Deactivate user</button>
+                        </form>
+                        {% else %}
+                        <form method="post" action="{{ url_for('admin.update_status', user_id=user['id']) }}">
+                            <input type="hidden" name="action" value="reactivate">
+                            <button type="submit" class="btn btn-sm btn-outline-success text-nowrap">Reactivate user</button>
                         </form>
                         {% endif %}
                     </div>

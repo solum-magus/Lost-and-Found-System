@@ -30,7 +30,8 @@ def create_tables():
             email TEXT NOT NULL UNIQUE,
             password TEXT NOT NULL,
             role TEXT NOT NULL DEFAULT 'Student'
-                CHECK(role IN ('Student', 'Faculty', 'Admin'))
+                CHECK(role IN ('Student', 'Faculty', 'Admin')),
+            is_active INTEGER NOT NULL DEFAULT 1
         )
     ''')
 

@@ -104,16 +104,19 @@ def login():
 
         if not errors:
             user = user_model.authenticate(email, password)
-            if user:
+            if user and not user["is_active"]:
+                # only shown after the password was correct, so it doesn't reveal who is registered
+                errors["login"] = "This account is deactivated. Please contact an administrator."
+            elif user:
                 session.clear()
                 session["user_id"] = user["id"]
                 session["full_name"] = user["full_name"]
                 session["role"] = user["role"]
                 return redirect(url_for(home_for(user["role"])))   # admin or user side
-
-            # Same message for a wrong email and a wrong password, on purpose,
-            # so nobody can use the form to find out which emails are registered.
-            errors["login"] = "Invalid email or password."
+            else:
+                # Same message for a wrong email and a wrong password, on purpose,
+                # so nobody can use the form to find out which emails are registered.
+                errors["login"] = "Invalid email or password."
 
     return render_template("login.html", form=request.form, errors=errors)
 
