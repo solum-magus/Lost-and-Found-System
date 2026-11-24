@@ -13,15 +13,15 @@ def dashboard():
 
     # Items from everyone, newest first, with the name of the user who reported each one
     all_items = db.execute(
-        "SELECT items.item_id, items.name, items.category, items.location, items.item_status, "
-        "items.status, items.date_reported, users.full_name AS reporter "
+        "SELECT items.item_id, items.user_id, items.name, items.category, items.location, "
+        "items.item_status, items.status, items.date_reported, users.full_name AS reporter "
         "FROM items JOIN users ON items.user_id = users.id "
         "ORDER BY items.date_reported DESC, items.item_id DESC"
     ).fetchall()
 
-    # Claims from everyone, newest first, with the item's name and who made the claim
     all_claims = db.execute(
-        "SELECT claims.claim_id, claims.claim_date, claims.claim_status, "
+        "SELECT claims.claim_id, claims.item_id, claims.user_id AS claimant_id, claims.proof_description, "
+        "claims.claim_date, claims.claim_status, "
         "items.name AS item_name, users.full_name AS claimant "
         "FROM claims JOIN items ON claims.item_id = items.item_id "
         "JOIN users ON claims.user_id = users.id "
