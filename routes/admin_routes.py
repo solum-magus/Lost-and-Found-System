@@ -1,8 +1,7 @@
-from flask import Blueprint, abort, flash, redirect, render_template, request, session, url_for
-
+from flask import Blueprint, flash, redirect, render_template, request, session, url_for
+from datetime import date, timedelta
 from database.connection import get_db
 from routes.utils import admin_required
-from database.connection import get_db
 
 bp = Blueprint("admin", __name__, url_prefix="/admin")
 
@@ -11,18 +10,21 @@ bp = Blueprint("admin", __name__, url_prefix="/admin")
 @admin_required
 def dashboard():
     db = get_db()
-    user_id = session["user_id"]
 
-    # Items
+    # Items from everyone, newest first, with the name of the user who reported each one
     all_items = db.execute(
-        "SELECT item_id, user_id, name, category, location, item_status, status, date_reported "
-        "FROM items ORDER BY date_reported DESC, item_id DESC"
+        "SELECT items.item_id, items.name, items.category, items.location, items.item_status, "
+        "items.status, items.date_reported, users.full_name AS reporter "
+        "FROM items JOIN users ON items.user_id = users.id "
+        "ORDER BY items.date_reported DESC, items.item_id DESC"
     ).fetchall()
 
-    # Claims
+    # Claims from everyone, newest first, with the item's name and who made the claim
     all_claims = db.execute(
-        "SELECT claims.claim_id, claims.claim_date, claims.claim_status, items.name "
+        "SELECT claims.claim_id, claims.claim_date, claims.claim_status, "
+        "items.name AS item_name, users.full_name AS claimant "
         "FROM claims JOIN items ON claims.item_id = items.item_id "
+        "JOIN users ON claims.user_id = users.id "
         "ORDER BY claims.claim_date DESC, claims.claim_id DESC"
     ).fetchall()
 
@@ -40,23 +42,40 @@ def dashboard():
         if claim["claim_status"] == "Pending":
             pending_count = pending_count + 1
 
-    resolved_count = 0
+    approved_count = 0
+    rejected_count = 0
     for claim in all_claims:
         if claim["claim_status"] == "Approved":
-            resolved_count = resolved_count + 1
+            approved_count = approved_count + 1
         if claim["claim_status"] == "Rejected":
-            resolved_count = resolved_count + 1
+            rejected_count = rejected_count + 1
+    resolved_count = approved_count + rejected_count
+
+    monday = date.today() - timedelta(days=date.today().weekday())
+    week_days = [monday + timedelta(days=n) for n in range(6)]
+    chart_labels = [d.strftime("%A") for d in week_days]            # "Monday", "Tuesday", ...
+    found_data = []
+    lost_data = []
+    for d in week_days:
+        day = d.isoformat()                                         # "2026-11-23", same format as date_reported
+        found_data.append(sum(1 for i in all_items if i["date_reported"] == day and i["item_status"] == "Found"))
+        lost_data.append(sum(1 for i in all_items if i["date_reported"] == day and i["item_status"] == "Lost"))
 
     return render_template(
         "admin/dashboard.html",
         full_name=session["full_name"],
         role=session["role"],
-        all_items=all_items,
-        all_claims=all_claims,
+        all_items=all_items[:5],        # only the 5 newest are shown; the counts above use all of them
+        all_claims=all_claims[:5],
         lost_count=lost_count,
         found_count=found_count,
         pending_count=pending_count,
-        resolved_count=resolved_count
+        resolved_count=resolved_count,
+        chart_labels=chart_labels,
+        found_data=found_data,
+        lost_data=lost_data,
+        approved_count=approved_count,
+        rejected_count=rejected_count,
     )
 
 

@@ -26,36 +26,108 @@
 </div>
 
 <div class="dash-section">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">Items Reported</h3>
+        <div class="d-flex align-items-center gap-3 fw-semibold small">
+            <span><span class="chart-dot" style="background: #FCF127;"></span>Found</span>
+            <span><span class="chart-dot chart-dot-lost"></span>Lost</span>
+        </div>
+    </div>
+    <div style="height: 280px;">
+        <canvas id="itemsChart"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.js"></script>
+<script>
+    // The numbers come from the route (admin_routes.py), turned into JavaScript lists by |tojson
+    /*var labels = {{ chart_labels|tojson }};
+    var foundData = {{ found_data|tojson }};
+    var lostData = {{ lost_data|tojson }};   this code works properly but keeps having some property assignment error idk */
+    var labels = JSON.parse('{{ chart_labels|tojson|safe }}');
+    var foundData = JSON.parse('{{ found_data|tojson|safe }}');
+    var lostData = JSON.parse('{{ lost_data|tojson|safe }}');
+
+    // Pick colors that suit the current theme, so the Lost bars don't vanish in dark mode
+    var dark = document.documentElement.getAttribute("data-bs-theme") === "dark";
+    var textColor = dark ? "#dee2e6" : "#212529";
+    var gridColor = dark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.15)";
+    var lostColor = dark ? "#4C7DDB" : "#031033";
+
+    new Chart(document.getElementById("itemsChart"), {
+        type: "bar",
+        data: {
+            labels: labels,
+            datasets: [
+                { label: "Found", data: foundData, backgroundColor: "#FCF127" },
+                { label: "Lost", data: lostData, backgroundColor: lostColor }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },       // we drew our own legend above
+            scales: {
+                x: { ticks: { color: textColor }, grid: { display: false } },
+                y: {
+                    beginAtZero: true,
+                    ticks: { color: textColor, precision: 0 },   // whole numbers only
+                    grid: { color: gridColor }
+                }
+            }
+        }
+    });
+</script>
+
+<div class="dash-section">
+    <h3>Claims Summary</h3>
+    <table>
+        <tr>
+            <th>Status</th>
+            <th class="text-end">Total</th>
+        </tr>
+        <tr>
+            <td><span class="dash-badge Pending">Pending</span></td>
+            <td class="text-end">{{ pending_count }}</td>
+        </tr>
+        <tr>
+            <td><span class="dash-badge Approved">Approved</span></td>
+            <td class="text-end">{{ approved_count }}</td>
+        </tr>
+        <tr>
+            <td><span class="dash-badge Rejected">Rejected</span></td>
+            <td class="text-end">{{ rejected_count }}</td>
+        </tr>
+    </table>
+</div>
+
+<div class="dash-section">
     <h3>Recent User Reports</h3>
     {% if all_items %}
     <table>
         <tr>
-            <th>Item ID</th>
-            <th>User ID</th>
             <th>Item</th>
             <th>Category</th>
             <th>Location</th>
             <th>Type</th>
+            <th>Reported by</th>
             <th>Status</th>
             <th>Date</th>
-            <th>Action</th>
         </tr>
         {% for item in all_items %}
         <tr>
-            <td>{{ item["item_id"] }}</td>
-            <td>{{ item["user_id"] }}</td>
             <td>{{ item["name"] }}</td>
             <td>{{ item["category"] }}</td>
             <td>{{ item["location"] }}</td>
             <td><span class="dash-badge {{ item['item_status'] }}">{{ item["item_status"] }}</span></td>
+            <td>{{ item["reporter"] }}</td>
             <td>{{ item["status"] }}</td>
             <td>{{ item["date_reported"] }}</td>
-            <td></td>
         </tr>
         {% endfor %}
     </table>
     {% else %}
-    <p class="dash-empty">You haven't reported any items yet.</p>
+    <p class="dash-empty">No items have been reported yet.</p>
     {% endif %}
 </div>
 
@@ -64,30 +136,22 @@
     {% if all_claims %}
     <table>
         <tr>
-            <th>Claim ID</th>
-            <th>Claimant ID</th>
             <th>Item</th>
-            <th>Proof</th>
+            <th>Claimed by</th>
             <th>Date</th>
             <th>Status</th>
-            <th>Date</th>
-            <th>Action</th>
         </tr>
         {% for claim in all_claims %}
         <tr>
-            <td></td>
-            <td></td>
-            <td>{{ claim["name"] }}</td>
-            <td></td>
+            <td>{{ claim["item_name"] }}</td>
+            <td>{{ claim["claimant"] }}</td>
             <td>{{ claim["claim_date"] }}</td>
             <td><span class="dash-badge {{ claim['claim_status'] }}">{{ claim["claim_status"] }}</span></td>
-            <td></td>
-            <td></td>
         </tr>
         {% endfor %}
     </table>
     {% else %}
-    <p class="dash-empty">You haven't made any claims yet.</p>
+    <p class="dash-empty">No claims have been made yet.</p>
     {% endif %}
 </div>
 {% endblock %}
