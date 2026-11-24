@@ -172,7 +172,7 @@ def claims():
     db = get_db()
     all_claims = db.execute(
         "SELECT claims.claim_id, claims.item_id, claims.user_id AS claimant_id, "
-        "claims.proof_description, claims.claim_date, claims.claim_status, "
+        "claims.proof_description, claims.claim_date, claims.claim_status, claims.admin_note, "
         "claimant.full_name AS claimant, claimant.email AS claimant_email, "
         "items.name AS item_name, items.category, items.location, items.description, "
         "items.item_status, items.status AS item_state, items.date_reported, "
