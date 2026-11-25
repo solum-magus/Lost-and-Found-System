@@ -68,3 +68,15 @@ def create_tables():
             FOREIGN KEY (user_id) REFERENCES users (id)
         )
     ''')
+
+# Only used if there is a new column in database
+#def add_column_if_missing(table, column, definition):
+#    db = get_db()
+#    cols = {r["name"] for r in db.execute(f"PRAGMA table_info({table})")}
+#    if column not in cols:
+#        db.execute(f"ALTER TABLE {table} ADD COLUMN {column} {definition}")
+#
+# at the end of create_tables():
+#add_column_if_missing("users", "is_active", "INTEGER NOT NULL DEFAULT 1")
+#add_column_if_missing("claims", "admin_note", "TEXT")
+#get_db().commit()
