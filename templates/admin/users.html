@@ -11,6 +11,7 @@
     {% if all_users %}
     <table>
         <tr>
+            <th>User ID</th>
             <th>Name</th>
             <th>Email</th>
             <th>Role</th>
@@ -23,6 +24,7 @@
         {% set my_items = items_by_user.get(user["id"], []) %}
         {% set my_claims = claims_by_user.get(user["id"], []) %}
         <tr>
+            <td>{{ user["id"] }}</td>
             <td>{{ user["full_name"] }}{% if user["id"] == my_id %} (you){% endif %}</td>
             <td>{{ user["email"] }}</td>
             <td><span class="dash-badge">{{ user["role"] }}</span></td>

@@ -101,7 +101,7 @@ def users():
     ).fetchall()
     all_claims = db.execute(
         "SELECT claims.claim_id, claims.user_id, claims.item_id, claims.proof_description, "
-        "claims.claim_date, claims.claim_status, items.name AS item_name "
+        "claims.claim_date, claims.claim_status, claims.admin_note, items.name AS item_name "
         "FROM claims JOIN items ON claims.item_id = items.item_id "
         "ORDER BY claims.claim_id DESC"
     ).fetchall()

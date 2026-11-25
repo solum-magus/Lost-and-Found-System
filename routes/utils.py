@@ -23,7 +23,7 @@ def login_required(view):
             session.clear()
             flash("Your account is no longer active. Please contact an administrator.", "warning")
             return redirect(url_for("auth.login"))
-
+        
         return view(*args, **kwargs)
     return wrapped
 
