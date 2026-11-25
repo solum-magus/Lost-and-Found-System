@@ -1,13 +1,14 @@
 from database.connection import get_db
+from datetime import date
 
 
 def create(user_id, name, category, description, location, item_status):
     """Saves a new report and returns its item_id."""
     db = get_db()
     cur = db.execute(
-        "INSERT INTO items (user_id, name, category, description, location, item_status) "
-        "VALUES (?, ?, ?, ?, ?, ?)",
-        (user_id, name, category, description, location, item_status),
+        "INSERT INTO items (user_id, name, category, description, location, item_status, date_reported) "
+        "VALUES (?, ?, ?, ?, ?, ?, ?)",
+        (user_id, name, category, description, location, item_status, date.today().isoformat()),
     )
     db.commit()
     return cur.lastrowid

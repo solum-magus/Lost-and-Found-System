@@ -26,7 +26,7 @@ def dashboard():
 
     # Claims this user made, with the name of the item claimed
     my_claims = db.execute(
-        "SELECT claims.claim_id, claims.claim_date, claims.claim_status, items.name "
+        "SELECT claims.claim_id, claims.claim_date, claims.claim_status, items.name, items.item_id "
         "FROM claims JOIN items ON claims.item_id = items.item_id "
         "WHERE claims.user_id = ? ORDER BY claims.claim_date DESC, claims.claim_id DESC",
         (user_id,),
@@ -112,11 +112,15 @@ def remove_item(item_id):
     if item is None:
         abort(404)
     if item["user_id"] != session["user_id"]:
-        abort(403)                                   # you can only remove your own reports
+        abort(403) # you can only remove your own reports
 
     if item["status"] == "Active":
-        item_model.set_status(item_id, "Removed")    # kept in the database, just not Active
+        item_model.set_status(item_id, "Removed")
         flash("Report removed.", "success")
+        get_db().execute("UPDATE claims SET claim_status='Rejected', admin_note='The report was removed by its reporter.' "
+                    "WHERE item_id=? AND claim_status='Pending'", (item_id,))
+        get_db().commit()
+
     return redirect(url_for("user.items"))
 
 @bp.route("/items/<int:item_id>/matches")
