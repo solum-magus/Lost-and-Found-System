@@ -38,13 +38,6 @@
             <div class="form-text">At least 10 characters.</div>
           </div>
 
-          {% if c["admin_note"] %}
-          <div class="small mt-2">
-            <strong>{% if c["claim_status"] == "Approved" %}Where to claim:{% else %}Reason:{% endif %}</strong>
-            {{ c["admin_note"] }}
-          </div>
-          {% endif %}
-
           <button class="btn btn-primary w-100">Submit claim</button>
         </form>
       </div>
@@ -67,6 +60,12 @@
             <div class="fw-semibold">{{ c["item_name"] }}</div>
             <div class="small text-body-secondary">Claimed on {{ c["claim_date"] }}</div>
             <div class="small mt-1">{{ c["proof_description"] }}</div>
+            {% if c["admin_note"] %}
+            <div class="small mt-2">
+              <strong>{% if c["claim_status"] == "Approved" %}Where to claim:{% else %}Reason:{% endif %}</strong>
+              {{ c["admin_note"] }}
+            </div>
+            {% endif %}
           </div>
           <span class="dash-badge {{ c['claim_status'] }}">{{ c["claim_status"] }}</span>
         </li>
