@@ -45,7 +45,7 @@
                                 <dt>Claim ID</dt><dd>{{ claim["claim_id"] }}</dd>
                                 <dt>Status</dt><dd><span class="dash-badge {{ claim['claim_status'] }}">{{ claim["claim_status"] }}</span></dd>
                                 <dt>Date claimed</dt><dd>{{ claim["claim_date"] }}</dd>
-                                <dt>Proof of ownership</dt><dd style="white-space: pre-wrap;">{{ claim["proof_description"] }}</dd>
+                                <dt>Proof of ownership</dt><dd>{{ claim["proof_description"] }}</dd>
                             </dl>
                         </div>
 
@@ -65,7 +65,7 @@
                                 <dt>Name</dt><dd>{{ claim["item_name"] }}</dd>
                                 <dt>Category</dt><dd>{{ claim["category"] }}</dd>
                                 <dt>Location</dt><dd>{{ claim["location"] }}</dd>
-                                {% if claim["description"] %}<dt>Description</dt><dd style="white-space: pre-wrap;">{{ claim["description"] }}</dd>{% endif %}
+                                {% if claim["description"] %}<dt>Description</dt><dd>{{ claim["description"] }}</dd>{% endif %}
                                 <dt>Type</dt><dd><span class="dash-badge {{ claim['item_status'] }}">{{ claim["item_status"] }}</span></dd>
                                 <dt>Item status</dt><dd>{{ claim["item_state"] }}</dd>
                                 <dt>Date reported</dt><dd>{{ claim["date_reported"] }}</dd>
@@ -108,7 +108,7 @@
                     </div>
                     {% else %}
                     <h6>{% if claim["claim_status"] == "Approved" %}Where to claim the item{% else %}Reason for rejection{% endif %}</h6>
-                    <p class="mb-0" style="white-space: pre-wrap;">{{ claim["admin_note"] or "No message was left." }}</p>
+                    <p class="mb-0">{{ claim["admin_note"] or "No message was left." }}</p>
                     {% endif %}
                 </div>
             </td>

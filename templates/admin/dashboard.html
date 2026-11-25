@@ -41,9 +41,6 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.js"></script>
 <script>
     // The numbers come from the route (admin_routes.py), turned into JavaScript lists by |tojson
-    /*var labels = {{ chart_labels|tojson }};
-    var foundData = {{ found_data|tojson }};
-    var lostData = {{ lost_data|tojson }};   this code works properly but keeps having some property assignment error idk */
     var labels = JSON.parse('{{ chart_labels|tojson|safe }}');
     var foundData = JSON.parse('{{ found_data|tojson|safe }}');
     var lostData = JSON.parse('{{ lost_data|tojson|safe }}');

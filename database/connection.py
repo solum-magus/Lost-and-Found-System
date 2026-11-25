@@ -1,8 +1,6 @@
 import sqlite3
 from flask import current_app, g
 
-#path = "database/plv-laf.db"
-
 def init_app(app):
     app.teardown_appcontext(close_db)
     with app.app_context():

@@ -7,13 +7,6 @@ from routes.utils import login_required
 
 bp = Blueprint("shared", __name__)
 
-@bp.route("/search")
-@login_required
-def search():
-    q = " ".join(request.args.get("q", "").split())
-    results = item_model.search(q) if q else []
-    return render_template("search.html", q=q, results=results)
-
 @bp.route("/reports")
 @login_required
 def reports():
