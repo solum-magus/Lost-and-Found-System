@@ -22,8 +22,11 @@ def dashboard():
     rejected_count = sum(1 for c in all_claims if c["claim_status"] == "Rejected")
     resolved_count = approved_count + rejected_count
 
-    monday = date.today() - timedelta(days=date.today().weekday())
-    week_days = [monday + timedelta(days=n) for n in range(6)]
+    # ?week=0 is this week, 1 is last week, 2 is two weeks ago, ...
+    week = max(0, min(request.args.get("week", 0, type=int), 52))
+    monday = date.today() - timedelta(days=date.today().weekday()) - timedelta(weeks=week)
+    week_days = [monday + timedelta(days=n) for n in range(7)]
+    chart_range = week_days[0].strftime("%b %d") + " - " + week_days[-1].strftime("%b %d, %Y")
     chart_labels = [d.strftime("%A") for d in week_days]            # "Monday", "Tuesday", ...
     found_data = []
     lost_data = []
@@ -42,13 +45,14 @@ def dashboard():
         found_count=found_count,
         pending_count=pending_count,
         resolved_count=resolved_count,
+        week=week,
+        chart_range=chart_range,
         chart_labels=chart_labels,
         found_data=found_data,
         lost_data=lost_data,
         approved_count=approved_count,
         rejected_count=rejected_count,
     )
-
 
 # ---------------------------------------------------------------
 # USER MANAGEMENT

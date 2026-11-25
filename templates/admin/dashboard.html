@@ -28,6 +28,17 @@
 <div class="dash-section">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h3 class="mb-0">Items Reported</h3>
+        <div class="d-flex align-items-center gap-2">
+            <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('admin.dashboard', week=week + 1) }}"
+               aria-label="Previous week"><i class="bi bi-chevron-left"></i></a>
+            <span class="small fw-semibold">{{ chart_range }}</span>
+            {% if week > 0 %}
+            <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('admin.dashboard', week=week - 1) }}"
+               aria-label="Next week"><i class="bi bi-chevron-right"></i></a>
+            {% else %}
+            <button class="btn btn-sm btn-outline-secondary" disabled aria-label="Next week"><i class="bi bi-chevron-right"></i></button>
+            {% endif %}
+        </div>
         <div class="d-flex align-items-center gap-3 fw-semibold small">
             <span><span class="chart-dot" style="background: #FCF127;"></span>Found</span>
             <span><span class="chart-dot chart-dot-lost"></span>Lost</span>
