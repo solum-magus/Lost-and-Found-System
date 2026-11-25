@@ -20,7 +20,16 @@ def get(item_id):
 
 def by_user(user_id):
     return get_db().execute(
-        "SELECT * FROM items WHERE user_id = ? ORDER BY item_id DESC", (user_id,)
+        "SELECT * FROM items WHERE user_id = ? ORDER BY date_reported DESC, item_id DESC", (user_id,)
+    ).fetchall()
+
+def all_with_reporter():
+    """Every report with the name of the user who made it, newest first (admin dashboard)."""
+    return get_db().execute(
+        "SELECT items.item_id, items.user_id, items.name, items.category, items.location, "
+        "items.item_status, items.status, items.date_reported, users.full_name AS reporter "
+        "FROM items JOIN users ON items.user_id = users.id "
+        "ORDER BY items.date_reported DESC, items.item_id DESC"
     ).fetchall()
 
 def search(text):

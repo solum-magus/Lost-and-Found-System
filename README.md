@@ -5,10 +5,10 @@ File Directory Guide (UPDATED)
 | Folder    | Details                                                                      |
 |-----------|------------------------------------------------------------------------------|
 | static    | Contains resources such as images, icons, and CSS files.                     |
-| models    | Contains the functions that read and write data in the database.             |
+| models    | Contains the functions(SQL queries) that read and write data in the database.|
 | templates | Contains the HTML pages.                                                     |
 | routes    | Handles user actions.                                                        |
-| database  | Handles database connections and initialization.                             |
+| database  | Handles database connections and contains database file.                     |
 
 ## Setup
 1. Install [Flask](https://flask.palletsprojects.com/en/stable/installation/)

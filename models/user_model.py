@@ -53,3 +53,17 @@ def set_active(user_id, active):
     db = get_db()
     db.execute("UPDATE users SET is_active = ? WHERE id = ?", (1 if active else 0, user_id))
     db.commit()
+
+def all_with_counts():
+    """Every user with how many reports and claims they have (admin Users page)."""
+    return get_db().execute(
+        "SELECT users.id, users.full_name, users.email, users.role, users.is_active, "
+        "(SELECT COUNT(*) FROM items WHERE items.user_id = users.id) AS item_count, "
+        "(SELECT COUNT(*) FROM claims WHERE claims.user_id = users.id) AS claim_count "
+        "FROM users ORDER BY users.full_name"
+    ).fetchall()
+
+def set_role(user_id, role):
+    db = get_db()
+    db.execute("UPDATE users SET role = ? WHERE id = ?", (role, user_id))
+    db.commit()
