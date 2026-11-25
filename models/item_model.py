@@ -32,11 +32,13 @@ def all_with_reporter():
         "ORDER BY items.date_reported DESC, items.item_id DESC"
     ).fetchall()
 
-def search(text):
-    """Active items whose name, category, location or description contains the text."""
+def search(text, include_all=False):
+    """Items whose name, category, location or description contains the text.
+    Only Active ones, unless include_all is True (admin view: every status)."""
     like = f"%{text}%"
+    where = "" if include_all else "status = 'Active' AND "
     return get_db().execute(
-        "SELECT * FROM items WHERE status = 'Active' AND "
+        "SELECT * FROM items WHERE " + where +
         "(name LIKE ? OR category LIKE ? OR location LIKE ? OR description LIKE ?) "
         "ORDER BY item_id DESC",
         (like, like, like, like),

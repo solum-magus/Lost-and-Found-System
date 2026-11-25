@@ -9,6 +9,7 @@
   <h5 class="mb-0">
     {% if q %}Results for "{{ q }}"
     {% elif kind == "Mine" %}My reports and claims
+    {% elif session.role == "Admin" %}All reports
     {% else %}All active reports{% endif %}
   </h5>
 
@@ -76,7 +77,7 @@
     <table>
       <tr>
         <th>ID</th><th>Name</th><th>Type</th><th>Category</th><th>Location</th><th>Date</th><th>Description</th>
-        {% if session.role != "Admin" %}<th>Actions</th>{% endif %}
+        {% if session.role == "Admin" %}<th>Status</th>{% else %}<th>Actions</th>{% endif %}
       </tr>
       {% for item in results %}
       <tr>
@@ -87,7 +88,9 @@
         <td>{{ item["location"] }}</td>
         <td>{{ item["date_reported"] }}</td>
         <td>{{ item["description"] }}</td>
-        {% if session.role != "Admin" %}
+        {% if session.role == "Admin" %}
+        <td>{{ item["status"] }}</td>
+        {% else %}
         <td class="text-nowrap">
           {# Only Found items reported by someone else can be claimed #}
           {% if item["user_id"] == session.user_id %}<span class="text-body-secondary small">Your report</span>
