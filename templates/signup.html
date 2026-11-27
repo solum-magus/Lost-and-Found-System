@@ -26,8 +26,7 @@
   <div class="mb-3">
     <label class="form-label" for="role">Role</label>
     <select class="form-select {{ 'is-invalid' if errors.role }}" id="role" name="role">
-      <!--No admin is intentional, basically we give like 1 admin account and that admin is the only one
-          who can change role of accounts to admin-->
+      <!--No admin is intentional, basically we give like 1 admin account and that admin is the only one who can change role of accounts to admin-->
       {% for r in ['Student', 'Faculty'] %} 
         <option {{ 'selected' if form.get('role') == r }}>{{ r }}</option>
       {% endfor %}

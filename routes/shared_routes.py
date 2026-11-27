@@ -26,7 +26,7 @@ def reports():
                                my_reports=my_reports, my_claims=my_claims)
 
     # Admins see every report, whatever its status; everyone else sees only Active ones
-    results = item_model.search(q, include_all=session["role"] == "Admin")   # empty q = everything                      # empty q = everything
+    results = item_model.search(q, include_all=session["role"] == "Admin")   # empty q = everything
 
     # Counts for the tabs always come from the full result, before the Lost/Found filter
     counts = {"All": len(results),

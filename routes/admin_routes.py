@@ -31,7 +31,7 @@ def dashboard():
     found_data = []
     lost_data = []
     for d in week_days:
-        day = d.isoformat()                                         # "2026-11-23", same format as date_reported
+        day = d.isoformat()                                         # year-month-day
         found_data.append(sum(1 for i in all_items if i["date_reported"] == day and i["item_status"] == "Found"))
         lost_data.append(sum(1 for i in all_items if i["date_reported"] == day and i["item_status"] == "Lost"))
 

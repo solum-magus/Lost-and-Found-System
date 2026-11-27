@@ -1,7 +1,4 @@
-"""Create repeatable demonstration accounts, reports, and claims.
-Run with: python seed.py
-Remove demonstration records before deployment.
-"""
+# Create repeatable demonstration accounts, reports, and claims.
 from datetime import date, timedelta
 
 from app import create_app
@@ -21,7 +18,6 @@ ACCOUNTS = [
     ("Ivan Bautista", "student7@plv.edu.ph", "student123", "Student"),
 ]
 
-# owner email, item name, category, description, location, type, status, days ago
 ITEMS = [
     ("student1@plv.edu.ph", "Black wireless earbuds", "Electronics", "Small black earbuds in a charging case.", "Library, 2nd floor", "Lost", "Active", 1),
     ("student2@plv.edu.ph", "Blue Jansport backpack", "Wallet / Bag", "Blue backpack with notebooks inside.", "Cafeteria", "Found", "Active", 1),
@@ -40,7 +36,6 @@ ITEMS = [
     ("student4@plv.edu.ph", "Black ball cap", "Clothing", "Plain black cap.", "Student lounge", "Lost", "Active", 12),
 ]
 
-# item name, claimant email, proof, status, admin note, days ago
 CLAIMS = [
     ("Student ID card", "student1@plv.edu.ph", "The name and student number on the card are mine.", "Approved", "Please claim it at the Admin Office.", 2),
     ("Black rectangular eyeglasses", "student2@plv.edu.ph", "I can identify the brand and the case design.", "Approved", "Returned to the owner at the Admin Office.", 4),

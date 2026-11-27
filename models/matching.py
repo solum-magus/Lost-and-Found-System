@@ -10,6 +10,7 @@ Discrete math used here (all of it is plain Python sets):
 """
 import re
 
+# CONFIG
 # Words that say nothing about an item, so they would only create fake matches
 STOPWORDS = {"a", "an", "and", "the", "of", "in", "on", "at", "to", "for", "with",
              "my", "is", "it", "was", "near", "i", "me", "has", "have", "from"}
